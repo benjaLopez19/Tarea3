@@ -15,7 +15,25 @@ def load_config_sv():
     par.append(np.int16(param[5])) # Clase Probe
     return(par)
 
+
 def load_data(fname):
+    """
+    Carga datos desde el txt
+    Para cada columna a excepción de la 42 (tipo de ataque) crear un diccionario con todos los tipos de valores individuales que tenga (particiones xd) y asignar un valor númerico a estos (los que no sean numéricos de por si), reemplazar en la matriz por estos valores
+    Para la columna objetivo cambiar los valores de la siguiente manera
+        Clase #1: Valores
+		'normal'
+		Clase #2: Valores
+		'neptune', 'teardrop', 'smurf', 'pod', 'back',
+		'land', 'apache2', 'processtable', 'mailbomb',
+		'udpstorm'
+		Clase #3: Valores
+		'ipsweep', 'portsweep', 'nmap',
+        'satan', 'saint', 'mscan'
+    Normalizar las variables (puede ser entre 0.01 y 0.99) de las columnas 1 a 41
+
+
+    """
     x  = np.loadtxt(fname, dtype= str, delimiter=",")
     
     '''
@@ -44,10 +62,11 @@ def load_data(fname):
     return x
 
 def main():
-    x = load_data(r'D:\Cosas\Desktop\Universidad\Decimo semestre\Sistemas distribuidos\Tarea\Tarea3\fuentes\KDDTrain.txt')
-    print(x)
+    datos = load_data(r'D:\Cosas\Desktop\Universidad\Decimo semestre\Sistemas distribuidos\Tarea\Tarea3\fuentes\KDDTrain.txt')
+    #separar datos en X e y
     print("*********************")
-    #print(y)
-       
+    #x,y = inf_gain(X,y, par[2]) #parametro 2 es la proporcion de valores que se usará creo, en teoría features*par[2] = k
+    #sacar v con svd, sacar con eso x nuevo 
+    #guardar índice de características más importantes y filter_v    
 if __name__ == '__main__':   
 	 main()
