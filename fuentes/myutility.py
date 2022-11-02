@@ -1,5 +1,18 @@
+from turtle import shape
 import numpy as np
 import pandas as pd
+
+#Valores de columna objetivo
+resultados = {  "normal":1,
+                #DOS
+                'neptune':2, 'teardrop':2, 'smurf':2, 'pod':2, 'back':2,
+			    'land':2, 'apache2':2, 'processtable':2, 'mailbomb':2,'udpstorm':2,
+                #Probe
+                'ipsweep':3, 'portsweep':3, 'nmap':3,
+                'satan':3, 'saint':3, 'mscan':3, 
+                #?
+                #"warezclient":4,"guess_passwd":4,"ftp_write":4,'multihop':4
+            }
 
 #LECTURA ARCHIVO
 
@@ -17,52 +30,49 @@ def load_config_sv():
 
 
 def load_data(fname):
-    """
-    Carga datos desde el txt
-    Para cada columna a excepción de la 42 (tipo de ataque) crear un diccionario con todos los tipos de valores individuales que tenga (particiones xd) y asignar un valor númerico a estos (los que no sean numéricos de por si), reemplazar en la matriz por estos valores
-    Para la columna objetivo cambiar los valores de la siguiente manera
-        Clase #1: Valores
-		'normal'
-		Clase #2: Valores
-		'neptune', 'teardrop', 'smurf', 'pod', 'back',
-		'land', 'apache2', 'processtable', 'mailbomb',
-		'udpstorm'
-		Clase #3: Valores
-		'ipsweep', 'portsweep', 'nmap',
-        'satan', 'saint', 'mscan'
-    Normalizar las variables (puede ser entre 0.01 y 0.99) de las columnas 1 a 41
+    db  = np.loadtxt(fname, dtype= str, delimiter=",")
 
+    index = []
+    #Se eliminan los valores no especificados en la ppt para la lista de ataque
+    for i in range(db.shape[0]):
+        if resultados.get(db[i,41]) is None:
+            index.append(i)
+    db = np.delete(db,index,0)
 
-    """
-    x  = np.loadtxt(fname, dtype= str, delimiter=",")
-    
-    '''
-    x  = np.array(x)
-    rows = x.shape[0]
-    cols = x.shape[1]
-    y  = np.zeros((rows, cols), float)
-    aux= np.zeros((rows, 1), float)
-    cont =0
-    xn = np.zeros((rows,cols-1))
-    for i in range (rows):
-        for j in range (cols-1):
-            xn[i,j] = x[i,j]
-    #print("shape xn ",xn.shape)
-            
-    for j  in range(cols -1, cols):
-        for i in range(0, rows):
-            cont = cont+1
-            y[i] = x[i,j]
-            aux[i,0] = x[i,j]
-    #xn = norm_data(xn)
-    #print(" data",xn)
-    
-    return(np.transpose(xn),aux)
-    '''
-    return x
+    aux_y = db[:,41] #Columna con valores objetivos
+    y = []
+
+    X = np.delete(db,41,1) #Resto de la base de datos
+
+    #Se cambian valores de la columna objetivo a números
+    for i in range(aux_y.size):
+        y.append(resultados[aux_y[i]])
+
+    #obtención de diccionarios para convertir variables no numéricas
+    dicts = []
+    aux = 0
+    for j in [1,2,3]:
+        dicts.append({})
+        cont = 1
+        for i in range(X.shape[0]):
+            if dicts[aux].get(X[i,j]) is None:
+                dicts[aux][str(X[i,j])] = cont
+                cont += 1
+        aux +=1
+    #reemplazo de variables no numéricas
+    aux = 0
+    for j in [1,2,3]:
+        for i in range(X.shape[0]):
+            X[i,j] = dicts[aux][X[i,j]]
+        aux +=1
+    #se transforman los datos a flotante
+    X = X.astype(float)
+
+    return X,y
 
 def main():
-    datos = load_data(r'D:\Cosas\Desktop\Universidad\Decimo semestre\Sistemas distribuidos\Tarea\Tarea3\fuentes\KDDTrain.txt')
+    X,y = load_data(r'D:\Cosas\Desktop\Universidad\Decimo semestre\Sistemas distribuidos\Tarea\Tarea3\fuentes\KDDTrain.txt')
+    print(X,y)
     #separar datos en X e y
     print("*********************")
     #x,y = inf_gain(X,y, par[2]) #parametro 2 es la proporcion de valores que se usará creo, en teoría features*par[2] = k
