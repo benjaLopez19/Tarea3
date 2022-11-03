@@ -1,6 +1,5 @@
-from turtle import shape
 import numpy as np
-import pandas as pd
+import sv 
 
 #Valores de columna objetivo
 resultados = {  "normal":1,
@@ -70,13 +69,56 @@ def load_data(fname):
 
     return X,y
 
+#Guardado de filtro e indices relevantes
+def save_filter(idx,V):
+    idx_2 = np.asarray(idx)
+    idx_2 = np.reshape(idx_2,(idx_2.shape[0],1))
+    #print(idx_2)
+    np.savetxt('index_var.csv', idx_2, fmt='%d', header=' ',  delimiter=' ; ')
+    np.savetxt('filter.csv', V, fmt='%1.13f', header=' ',  delimiter=' ; ') 
+    
+    return()
+
+#Normalización de datos
+def normalizar(x):
+    rows = x.shape[0]
+    cols = x.shape[1]
+    xn  = np.zeros((rows,cols),float)
+    b = 0.99
+    a = 0.01
+    np.seterr(invalid='ignore')
+    for j in range(0, cols ):
+        aux_min =100000000000
+        aux_max = 0
+        for i in range(0, rows ):
+            if j != cols -1 :
+                if aux_min > x[i,j]:
+                    aux_min = x[i,j]
+                if aux_max < x[i,j]:
+                    aux_max = x[i,j]
+        #print("minimo",aux_min,"maximo", aux_max)
+        for k in range(0, rows ):
+            if j != cols:
+                x_a = (x[k,j] - aux_min)
+                x_b = (aux_max - aux_min)
+                restab = (b-a)
+                if np.isnan(((x_a / x_b) * restab ) + a):
+                    xn[k,j] = 0
+                else:
+                    xn[k,j] = ((x_a / x_b) * restab ) + a
+
+    return(xn)
+
 def main():
     X,y = load_data(r'D:\Cosas\Desktop\Universidad\Decimo semestre\Sistemas distribuidos\Tarea\Tarea3\fuentes\KDDTrain.txt')
-    print(X,y)
+    #print(X,y)
     #separar datos en X e y
+    print(sv.inf_gain(X,y))
+    #print(normalizar(X))
     print("*********************")
     #x,y = inf_gain(X,y, par[2]) #parametro 2 es la proporcion de valores que se usará creo, en teoría features*par[2] = k
     #sacar v con svd, sacar con eso x nuevo 
-    #guardar índice de características más importantes y filter_v    
+    #guardar índice de características más importantes y filter_v
+        
 if __name__ == '__main__':   
 	 main()
