@@ -1,4 +1,3 @@
-from tkinter import E
 import numpy as np
 import myutility as mt
 
@@ -23,7 +22,7 @@ def inf_gain(X,y):
 
         E.append(feature_entropy)
     IG = I-E
-    return I,E
+    return IG
 
 def calculateEntropy(x,y):
     x = np.array(x)
@@ -54,22 +53,6 @@ def calculateEntropy(x,y):
             partI -= pi*np.log2(pi)
         I += E*partI
 
-
-    
-    '''
-    count = {}
-
-    for i in data:
-        print(attr) 
-        if(i[attr] in count):
-            count[i[attr]] = count[i[attr]]+1
-        else:
-            count[i[attr]]=1
-    h=0.0   
-    for j in count.values():
-        h= h+ ((-1)*(j/len(data))* np.log2(j/len(data)))
-    return h
-    '''
     #print(I)
     return I
 # SVD of X based on ppt
@@ -90,3 +73,24 @@ def svd_x(x):
     
     return(v)
 
+def select_variables(relevancia,vectores_singulares):
+    x,y = mt.load_data('fuentes\KDDTrain.txt')        
+    D,N = x.shape
+   
+    idx = []
+    IG = inf_gain(x,y)
+    for i in range(len(IG)):
+        if IG[i] > relevancia:
+           idx.append(i)
+    
+    x = x[idx,:]
+    #print(idx)
+    
+    v = svd_x(x)
+    if v.shape[1] > vectores_singulares:
+        v = v[:,0:vectores_singulares]
+    x = np.dot(np.transpose(v),x)   
+
+    mt.save_filter(idx,v)
+
+    return(x,y)

@@ -1,6 +1,6 @@
 import numpy as np
 import sv 
-
+import os
 
 #Valores de columna objetivo
 resultados = {  "normal":1,
@@ -21,8 +21,8 @@ def load_config_sv():
     par=[]    
     par.append(np.int16(param[0])) # N. muestrar train 
     par.append(np.int16(param[1])) # N muestras test
-    par.append(np.int16(param[2])) # Valor de relevancia
-    par.append(np.float(param[3])) # N vectores singulares  
+    par.append(np.float(param[2])) # Valor de relevancia
+    par.append(np.int16(param[3])) # N vectores singulares  
     par.append(np.int16(param[4])) # Clase normal     
     par.append(np.int16(param[5])) # Clase DOS
     par.append(np.int16(param[5])) # Clase Probe
@@ -111,15 +111,21 @@ def normalizar(x):
     return(xn)
 
 def main():
-    
+    current_file = os.getcwd() + "\\fuentes\KDDTrain.txt"
+    X,y = load_data(current_file)
     #print(X,y)
     #separar datos en X e y
-    print(sv.inf_gain(X,y))
+    #order = sv.inf_gain(X,y)
+    #print(order)
     #print(normalizar(X))
     print("*********************")
+    x,y= sv.select_variables(param[2],param[3])
+    x = np.array(x)
+    y = np.array(y)
+    print(x.shape,y.shape)
     #x,y = inf_gain(X,y, par[2]) #parametro 2 es la proporcion de valores que se usará creo, en teoría features*par[2] = k
     #sacar v con svd, sacar con eso x nuevo 
     #guardar índice de características más importantes y filter_v
-        
+    print("--- %s seconds ---" % (time.time() - start_time))
 if __name__ == '__main__':   
 	 main()
