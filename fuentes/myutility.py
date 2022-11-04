@@ -1,6 +1,6 @@
 import numpy as np
 import sv 
-import os
+
 
 #Valores de columna objetivo
 resultados = {  "normal":1,
@@ -111,8 +111,7 @@ def normalizar(x):
     return(xn)
 
 def main():
-    current_file = os.getcwd() + "\\fuentes\KDDTrain.txt"
-    X,y = load_data(current_file)
+    
     #print(X,y)
     #separar datos en X e y
     print(sv.inf_gain(X,y))
