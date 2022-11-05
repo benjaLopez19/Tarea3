@@ -2,6 +2,7 @@ import numpy as np
 import time
 import sv 
 import os
+import random
 
 #Valores de columna objetivo
 resultados = {  "normal":1,
@@ -30,19 +31,18 @@ def load_config_sv():
     return(par)
 
 
-def load_data(fname):
+def load_data(fname,type):
     db  = np.loadtxt(fname, dtype= str, delimiter=",")
-
     index = []
     #Se eliminan los valores no especificados en la ppt para la lista de ataque
     for i in range(db.shape[0]):
         if resultados.get(db[i,41]) is None:
             index.append(i)
     db = np.delete(db,index,0)
+    
 
     aux_y = db[:,41] #Columna con valores objetivos
     y = []
-
     X = np.delete(db,41,1) #Resto de la base de datos
 
     #Se cambian valores de la columna objetivo a números
@@ -51,7 +51,29 @@ def load_data(fname):
 
     #obtener indices de als variables que estén en 0 en los parametros, para eliminarlas de las filas X
     #CAPEAR DATA POR CONFIG
+    config = load_config_sv()
+    #==========================INDICES===========================
+    idx = []
+    for i in range (len(X)):
+        idx.append(i)
 
+    #####TRAIN========================================================================#####################
+    aux=[]
+    if (type == 0):
+        for i in range(config[0]):
+            rand_idx = random.choice(idx) #escoje un indice al azar dentro de los indices de la base de datos
+            aux.append(X[rand_idx,:])
+        X=aux
+    X = np.array(X)   
+
+    #####TEST========================================================================#####################
+    aux=[]
+    if (type == 1):
+        for i in range(config[1]):
+            rand_idx = random.choice(idx) #escoje un indice al azar dentro de los indices de la base de datos
+            aux.append(X[rand_idx,:])
+        X=aux
+    X = np.array(X)   
     
     #obtención de diccionarios para convertir variables no numéricas
     dicts = []
@@ -126,13 +148,12 @@ def main():
     #print(order)
     #print(normalizar(X))
     print("*********************")
-    x_train,y_train = sv.select_variables(param[2],param[3],0,param[0])
-    x_test,y_test = sv.select_variables(param[2],param[3],1,param[1])
+    x_train,y_train = sv.select_variables(param[2],param[3])
 
 
-    x = np.array(x)
-    y = np.array(y)
-    print(x.shape,y.shape)
+    x_train = np.array(x_train)
+    y_train = np.array(y_train)
+    print(x_train.shape,y_train.shape)
     #x,y = inf_gain(X,y, par[2]) #parametro 2 es la proporcion de valores que se usará creo, en teoría features*par[2] = k
     #sacar v con svd, sacar con eso x nuevo 
     #guardar índice de características más importantes y filter_v
