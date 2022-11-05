@@ -15,9 +15,6 @@ def inf_gain(X,y):
     #Entropía ponderada del atributo
     E = []
     for j in range(cols):
-        #print("j en ing_gain",j)
-        #print(valores_x,ocurrencias_x)
-        
         feature_entropy = calculateEntropy(X[j,:],y)
 
         E.append(feature_entropy)
@@ -31,9 +28,7 @@ def calculateEntropy(x,y):
     valores_x, ocurrencias_x = np.unique(x, return_counts=True)
     #print(valores_x)
     count = []
-    #print(valores_x,ocurrencias_x)
     #arma diccionarios con el conteo de valores que tiene cada particion respecto de las variables objetivo
-    #print(valores_x.shape)
     for i in range(valores_x.shape[0]):
         count.append({})
         for j in range(n):
@@ -84,14 +79,11 @@ def select_variables(relevancia,vectores_singulares):
            idx.append(i)
     
     x = x[idx,:]
-    #print(idx)
     
     v = svd_x(x)
-    print("V DE LA FUNCION",v.shape)
     if v.shape[1] > vectores_singulares:
         v = v[:,0:vectores_singulares]
-    print("V DEspues if",v.shape)
-    print("TAMAÑOS",np.transpose(v).shape,x.shape)
+
     x = np.dot(np.transpose(v),x)   
     
     mt.save_filter(idx,v)
