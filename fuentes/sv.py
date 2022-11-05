@@ -57,8 +57,8 @@ def calculateEntropy(x,y):
     return I
 # SVD of X based on ppt
 def svd_x(x):
-    d = x.shape[0]
-    N = x.shape[1]
+    d = x.shape[1]
+    N = x.shape[0]
     
     x_mean = np.zeros(x.shape)
     for i in range(0,d):

@@ -1,4 +1,5 @@
 import numpy as np
+import time
 import sv 
 import os
 
@@ -111,8 +112,10 @@ def normalizar(x):
     return(xn)
 
 def main():
-    current_file = os.getcwd() + "\\fuentes\KDDTrain.txt"
-    X,y = load_data(current_file)
+    param = load_config_sv()
+    start_time = time.time()
+    #current_file = os.getcwd() + "\\fuentes\KDDTrain.txt"
+    X,y = load_data("fuentes\KDDTrain.txt")
     #print(X,y)
     #separar datos en X e y
     #order = sv.inf_gain(X,y)
