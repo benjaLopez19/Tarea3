@@ -25,8 +25,8 @@ def load_config_sv():
     par.append(np.float(param[2])) # Valor de relevancia
     par.append(np.int16(param[3])) # N vectores singulares  
     par.append(np.int16(param[4])) # Clase normal     
-    par.append(np.int16(param[5])) # Clase DOS
-    par.append(np.int16(param[5])) # Clase Probe
+    par.append(np.int16(param[5])) # Clase DOS 
+    par.append(np.int16(param[6])) # Clase Probe
     return(par)
 
 
@@ -49,6 +49,10 @@ def load_data(fname):
     for i in range(aux_y.size):
         y.append(resultados[aux_y[i]])
 
+    #obtener indices de als variables que estén en 0 en los parametros, para eliminarlas de las filas X
+    #CAPEAR DATA POR CONFIG
+
+    
     #obtención de diccionarios para convertir variables no numéricas
     dicts = []
     aux = 0
@@ -115,17 +119,9 @@ def main():
     param = load_config_sv()
     start_time = time.time()
     #current_file = os.getcwd() + "\\fuentes\KDDTrain.txt"
-    X,y = load_data("fuentes\KDDTrain.txt")
-    #print(X,y)
-    #separar datos en X e y
-    #order = sv.inf_gain(X,y)
-    #print(order)
-    #print(normalizar(X))
     print("*********************")
-    x,y= sv.select_variables(param[2],param[3])
-    x = np.array(x)
-    y = np.array(y)
-    print(x.shape,y.shape)
+    x_train,y_train= sv.select_variables(param[2],param[3])
+    x_test,y_test = sv.load_test(param[2],param[3]) #
     #x,y = inf_gain(X,y, par[2]) #parametro 2 es la proporcion de valores que se usará creo, en teoría features*par[2] = k
     #sacar v con svd, sacar con eso x nuevo 
     #guardar índice de características más importantes y filter_v
