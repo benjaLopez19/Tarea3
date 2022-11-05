@@ -61,11 +61,10 @@ def svd_x(x):
     N = x.shape[1]
     
     x_mean = np.zeros(x.shape)
-    
     for i in range(0,d):
         x_mean[i] = x[i] - np.mean(x[i])
     x = x_mean
-    #print(x)
+    print(x.shape)
 
     y = np.transpose(x) / np.sqrt(N - 1)
     #print(y, y.shape)
@@ -83,14 +82,20 @@ def select_variables(relevancia,vectores_singulares):
         if IG[i] > relevancia:
            idx.append(i)
     
-    x = x[idx,:]
+    x = x[:,idx]
     #print(idx)
     
+    print(x.shape)
     v = svd_x(x)
+    print("V DE LA FUNCION",v.shape)
     if v.shape[1] > vectores_singulares:
         v = v[:,0:vectores_singulares]
+    print("V DEspues if",v.shape)
+    #print(x.shape,v.shape)
+    print("v shape",np.transpose(v).shape,x.shape)
     x = np.dot(np.transpose(v),x)   
 
+    #print(x)
     mt.save_filter(idx,v)
 
     return(x,y)
