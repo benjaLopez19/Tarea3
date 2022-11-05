@@ -44,31 +44,18 @@ def load_data(fname,type):
 
     config = load_config_sv()
 
-    #====================================TRAIN=============================#
+#====================================TRAIN=============================#
 
-    aux=[]
-    if (type == 0):
-        for i in range(config[0]):
-            #escoje un indice al azar dentro de los indices de la base de datos
-            idx = np.random.randint(1,db.shape[0])
-            aux.append(db[idx,:])
-        db = aux
-        db = np.array(db)
-
-        print(db.shape)
-
+    if(type==0):
+        aux = random.sample(range(db.shape[0]), config[0])
+        aux.sort()
+        db = db[aux,:]
+    
 #=================================TEST=======================================#
-
-    aux=[]
     if (type == 1):
-        for i in range(config[1]):
-                #escoje un indice al azar dentro de los indices de la base de datos
-            idx = np.random.randint(1,db.shape[0])
-            aux.append(db[idx,:])
-            db = aux
-            db = np.array(db)
-
-        print(db.shape)
+        aux = random.sample(range(db.shape[0]), config[1])
+        aux.sort()
+        db = db[aux,:]
 
     aux_y = db[:,41] #Columna con valores objetivos
     y = []
