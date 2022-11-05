@@ -1,6 +1,5 @@
 import numpy as np
 import sv 
-import time
 import os
 
 #Valores de columna objetivo
@@ -112,9 +111,6 @@ def normalizar(x):
     return(xn)
 
 def main():
-    start_time = time.time()
-    param = load_config_sv()
-    #X,y = load_data(r'D:\Cosas\Desktop\Universidad\Decimo semestre\Sistemas distribuidos\Tarea\Tarea3\fuentes\KDDTrain.txt')
     current_file = os.getcwd() + "\\fuentes\KDDTrain.txt"
     X,y = load_data(current_file)
     #print(X,y)
