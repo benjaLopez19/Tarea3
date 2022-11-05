@@ -25,9 +25,8 @@ def load_config_sv():
     par.append(np.float(param[2])) # Valor de relevancia
     par.append(np.int16(param[3])) # N vectores singulares  
     par.append(np.int16(param[4])) # Clase normal     
-    par.append(np.int16(param[5])) # Clase DOS
-    par.append(np.int16(param[5])) # Clase Probe
-    print("parametro",param[0])
+    par.append(np.int16(param[5])) # Clase DOS 
+    par.append(np.int16(param[6])) # Clase Probe
     return(par)
 
 
@@ -50,6 +49,10 @@ def load_data(fname):
     for i in range(aux_y.size):
         y.append(resultados[aux_y[i]])
 
+    #obtener indices de als variables que estén en 0 en los parametros, para eliminarlas de las filas X
+    #CAPEAR DATA POR CONFIG
+
+    
     #obtención de diccionarios para convertir variables no numéricas
     dicts = []
     aux = 0
