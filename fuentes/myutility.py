@@ -41,7 +41,8 @@ def load_data(fname,type):
         if resultados.get(db[i,41]) is None:
             index.append(i)
     db = np.delete(db,index,0)
-
+    
+    config = load_config_sv()
     aux=[]
     if (type == 0):
         for i in range(config[0]):
@@ -62,7 +63,7 @@ def load_data(fname,type):
     for i in range(aux_y.size):
         y.append(resultados[aux_y[i]])
 
-    config = load_config_sv()
+   
 
     #####TRAIN========================================================================#####################
 
