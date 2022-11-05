@@ -34,11 +34,16 @@ def load_config_sv():
 def load_data(fname,type):
     db  = np.loadtxt(fname, dtype= str, delimiter=",")
     index = []
+
+    #reduccion de filas
     #Se eliminan los valores no especificados en la ppt para la lista de ataque
     for i in range(db.shape[0]):
         if resultados.get(db[i,41]) is None:
             index.append(i)
     db = np.delete(db,index,0)
+
+
+    #REDUCCION POR VALOR DE CONFIG
 
     aux_y = db[:,41] #Columna con valores objetivos
     y = []
