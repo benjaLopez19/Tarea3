@@ -27,6 +27,7 @@ def load_config_sv():
     par.append(np.int16(param[4])) # Clase normal     
     par.append(np.int16(param[5])) # Clase DOS
     par.append(np.int16(param[5])) # Clase Probe
+    print("parametro",param[0])
     return(par)
 
 
@@ -115,14 +116,17 @@ def main():
     param = load_config_sv()
     start_time = time.time()
     #current_file = os.getcwd() + "\\fuentes\KDDTrain.txt"
-    X,y = load_data("fuentes\KDDTrain.txt")
+
     #print(X,y)
     #separar datos en X e y
     #order = sv.inf_gain(X,y)
     #print(order)
     #print(normalizar(X))
     print("*********************")
-    x,y= sv.select_variables(param[2],param[3])
+    x_train,y_train = sv.select_variables(param[2],param[3],0,param[0])
+    x_test,y_test = sv.select_variables(param[2],param[3],1,param[1])
+
+
     x = np.array(x)
     y = np.array(y)
     print(x.shape,y.shape)
