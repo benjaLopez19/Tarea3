@@ -68,8 +68,8 @@ def load_data(fname):
         aux +=1
     #se transforman los datos a flotante
     X = X.astype(float)
-
-    return X,y
+    
+    return (np.transpose(X),y)
 
 #Guardado de filtro e indices relevantes
 def save_filter(idx,V):

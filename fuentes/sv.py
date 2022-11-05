@@ -2,8 +2,8 @@ import numpy as np
 import myutility as mt
 
 def inf_gain(X,y):
-    cols = X.shape[1]
-    rows = X.shape[0]
+    cols = X.shape[0]
+    rows = X.shape[1]
     print(X.shape)
     #Entropía de y
     I = 0
@@ -18,7 +18,7 @@ def inf_gain(X,y):
         #print("j en ing_gain",j)
         #print(valores_x,ocurrencias_x)
         
-        feature_entropy = calculateEntropy(X[:,j],y)
+        feature_entropy = calculateEntropy(X[j,:],y)
 
         E.append(feature_entropy)
     IG = I-E
@@ -57,14 +57,15 @@ def calculateEntropy(x,y):
     return I
 # SVD of X based on ppt
 def svd_x(x):
-    d = x.shape[1]
-    N = x.shape[0]
+    d = x.shape[0]
+    N = x.shape[1]
     
     x_mean = np.zeros(x.shape)
+    
     for i in range(0,d):
         x_mean[i] = x[i] - np.mean(x[i])
     x = x_mean
-    print(x.shape)
+    print("SHAPE CULIAO X",x.shape)
 
     y = np.transpose(x) / np.sqrt(N - 1)
     #print(y, y.shape)
@@ -82,20 +83,17 @@ def select_variables(relevancia,vectores_singulares):
         if IG[i] > relevancia:
            idx.append(i)
     
-    x = x[:,idx]
+    x = x[idx,:]
     #print(idx)
     
-    print(x.shape)
     v = svd_x(x)
     print("V DE LA FUNCION",v.shape)
     if v.shape[1] > vectores_singulares:
         v = v[:,0:vectores_singulares]
     print("V DEspues if",v.shape)
-    #print(x.shape,v.shape)
-    print("v shape",np.transpose(v).shape,x.shape)
+    print("TAMAÑOS",np.transpose(v).shape,x.shape)
     x = np.dot(np.transpose(v),x)   
-
-    #print(x)
+    
     mt.save_filter(idx,v)
 
     return(x,y)
