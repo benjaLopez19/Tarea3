@@ -39,7 +39,6 @@ def load_data(fname,type):
         if resultados.get(db[i,41]) is None:
             index.append(i)
     db = np.delete(db,index,0)
-    
 
     aux_y = db[:,41] #Columna con valores objetivos
     y = []
@@ -49,29 +48,29 @@ def load_data(fname,type):
     for i in range(aux_y.size):
         y.append(resultados[aux_y[i]])
 
-    #obtener indices de als variables que estén en 0 en los parametros, para eliminarlas de las filas X
-    #CAPEAR DATA POR CONFIG
     config = load_config_sv()
-    #==========================INDICES===========================
-    idx = []
-    for i in range (len(X)):
-        idx.append(i)
 
     #####TRAIN========================================================================#####################
     aux=[]
     if (type == 0):
         for i in range(config[0]):
-            rand_idx = random.choice(idx) #escoje un indice al azar dentro de los indices de la base de datos
-            aux.append(X[rand_idx,:])
-        X=aux
-    X = np.array(X)   
+            #escoje un indice al azar dentro de los indices de la base de datos
+            idx = np.random.randint(1,db.shape[0])
+            aux.append(db[idx,:])
+        db = aux
+        db = np.array(db)
+
+        print(db.shape)
+
+    #obtener indices de als variables que estén en 0 en los parametros, para eliminarlas de las filas X
+    #CAPEAR DATA POR CONFIG
+
 
     #####TEST========================================================================#####################
-    aux=[]
     if (type == 1):
         for i in range(config[1]):
             rand_idx = random.choice(idx) #escoje un indice al azar dentro de los indices de la base de datos
-            aux.append(X[rand_idx,:])
+            aux.append(X[random.randint(0,db.shape[0]),:])
         X=aux
     X = np.array(X)   
     
