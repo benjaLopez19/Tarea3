@@ -31,7 +31,7 @@ def load_config_sv():
     return(par)
 
 
-def load_data(fname,type):
+def load_data(fname,type,clase):
     db  = np.loadtxt(fname, dtype= str, delimiter=",")
     index = []
 
@@ -44,6 +44,32 @@ def load_data(fname,type):
 
     config = load_config_sv()
 
+#====separacion por clase==============================================#
+    
+    #NORMAL
+    if(clase == 1):
+        aux = []
+        print("CLASE SELECCIONADA: NORMAL")
+        for i in range(db.shape[0]):
+            if resultados.get(db[i,41]) == 1:
+                aux.append(db[i,:])
+        db = aux   
+        db = np.array(db) 
+    
+
+    #DOS
+    if(clase == 2):
+        print("CLASE SELECCIONADA: DOS")
+        for i in range(db.shape[0]):
+            if resultados.get(db[i,41]) == 2:
+                aux.append(db[i,:])
+
+        db = aux   
+        db = np.array(db) 
+
+                
+
+
 #====================================TRAIN=============================#
 
     if(type==0):
@@ -51,11 +77,15 @@ def load_data(fname,type):
         aux.sort()
         db = db[aux,:]
     
+    
 #=================================TEST=======================================#
     if (type == 1):
         aux = random.sample(range(db.shape[0]), config[1])
         aux.sort()
         db = db[aux,:]
+
+
+#====================================================================================#
 
     aux_y = db[:,41] #Columna con valores objetivos
     y = []

@@ -69,7 +69,7 @@ def svd_x(x):
 
 def select_variables(relevancia,vectores_singulares):
     
-    x,y = mt.load_data('fuentes\KDDTrain.txt',0)  
+    x,y = mt.load_data('fuentes\KDDTrain.txt',0,1)  
     D,N = x.shape
    
     idx = []
