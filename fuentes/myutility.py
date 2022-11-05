@@ -42,7 +42,16 @@ def load_data(fname,type):
             index.append(i)
     db = np.delete(db,index,0)
 
+    aux=[]
+    if (type == 0):
+        for i in range(config[0]):
+            #escoje un indice al azar dentro de los indices de la base de datos
+            idx = np.random.randint(1,db.shape[0])
+            aux.append(db[idx,:])
+        db = aux
+        db = np.array(db)
 
+        print(db.shape)
     #REDUCCION POR VALOR DE CONFIG
 
     aux_y = db[:,41] #Columna con valores objetivos
@@ -56,16 +65,7 @@ def load_data(fname,type):
     config = load_config_sv()
 
     #####TRAIN========================================================================#####################
-    aux=[]
-    if (type == 0):
-        for i in range(config[0]):
-            #escoje un indice al azar dentro de los indices de la base de datos
-            idx = np.random.randint(1,db.shape[0])
-            aux.append(db[idx,:])
-        db = aux
-        db = np.array(db)
 
-        print(db.shape)
 
     #obtener indices de als variables que estén en 0 en los parametros, para eliminarlas de las filas X
     #CAPEAR DATA POR CONFIG
