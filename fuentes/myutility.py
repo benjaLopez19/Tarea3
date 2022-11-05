@@ -47,26 +47,36 @@ def load_data(fname,type,clase):
 #====separacion por clase==============================================#
     
     #NORMAL
-    if(clase == 1):
+    if(config[4] == 0):
         aux = []
-        print("CLASE SELECCIONADA: NORMAL")
+        print("CLASE SELECCIONADA ELIMINADA: NORMAL")
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 1:
-                aux.append(db[i,:])
-        db = aux   
-        db = np.array(db) 
+                aux.append(i)
+        db = np.delete(db,aux,0) 
+    
     
 
     #DOS
-    if(clase == 2):
-        print("CLASE SELECCIONADA: DOS")
+    if(config[5] == 0):
+        aux = []
+        print("CLASE SELECCIONADA ELIMINADA: DOS")
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 2:
-                aux.append(db[i,:])
+                aux.append(i)
 
-        db = aux   
-        db = np.array(db) 
+        db = np.delete(db,aux,0)  
+    
+    #Probe
+    if(config[6] == 0):
+        aux = []
+        print("CLASE SELECCIONADA ELIMINADA: Probe")
+        for i in range(db.shape[0]):
+            if resultados.get(db[i,41]) == 2:
+                aux.append(i)
 
+        db = np.delete(db,aux,0)  
+    
                 
 
 
