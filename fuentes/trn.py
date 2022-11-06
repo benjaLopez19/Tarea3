@@ -11,7 +11,7 @@ def main():
     x,y = sv.select_variables()
     np.savetxt('dtrn.csv', x, fmt='%d', header=' ',  delimiter=' , ')
     np.savetxt('etrn.csv', y, fmt='%d', header=' ',  delimiter=' , ') 
-
+    
 
 if __name__ == '__main__':   
 	 main()

@@ -81,7 +81,7 @@ def svd_x(x):
 
 def select_variables():
     """
-    Seleccion de variables que utiliza el SVD.
+    Seleccion de variables que utiliza ganancia de información y reducción de redunancia con SVD.
     """
     param = mt.load_config_sv()
     x,y = mt.load_data('fuentes\KDDTrain.txt',0) 
@@ -115,25 +115,23 @@ def main():
     np.savetxt('etrn.csv', y, fmt='%d', header=' ',  delimiter=' , ')
 
     #sacar archivo de indices
-    index = np.loadtxt('index_var.csv', dtype= str, delimiter=";")
+    index = np.loadtxt('index_var.csv', dtype= int, delimiter=";")
 
     #sacar archivo de matriz v
-    v = np.loadtxt('filter.csv', dtype= str, delimiter=";")
+    v = np.loadtxt('filter.csv', dtype= int, delimiter=";")
 
     #cargar datos de testeo
     x_test , y_test = mt.load_data('fuentes/KDDTest.txt',1)
 
     #filtrar/caracteristicas filas por indice
-    print(y_test)
-
-
+    x_test = x_test[index,:]
     #filtrar con v (vtraspuesta*x)
     x_dtst = np.dot(np.transpose(v),x_test)   
-    
+
     #crear x como dtst.csv
     np.savetxt('dtst.csv', x_dtst, fmt='%d', header=' ',  delimiter=' , ')
     #guardar y como etst.csv
-    np.savetxt('etst.csv', y_dtst, fmt='%d', header=' ',  delimiter=' , ')
+    np.savetxt('etst.csv', y_test, fmt='%d', header=' ',  delimiter=' , ')
 
 
 if __name__ == '__main__':   
