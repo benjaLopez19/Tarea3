@@ -2,32 +2,43 @@ import numpy as np
 import myutility as mt
 
 def inf_gain(X,y):
+    """
+    Calculo de Ganancia de Informacion.
+    """
     cols = X.shape[0]
     rows = X.shape[1]
-    #Entropía de y
+
+    #Entropía de y o entropia de clase
     I = 0
     valores_y, ocurrencias_y = np.unique(y,return_counts=True)
     for i in range(valores_y.size):
-        pi = ocurrencias_y[i]/len(y)
-        I -= (pi*np.log2(pi))
-    print("Entropia variable objetivo",I)
-
+        pi = ocurrencias_y[i] / len(y)
+        I -= (pi * np.log2(pi))
+    #print("Entropia variable objetivo",I)
+    
     #Entropía ponderada del atributo
     E = []
     for j in range(cols):
         feature_entropy = calculateEntropy(X[j,:],y)
-
         E.append(feature_entropy)
+
     IG = I-E
-    
+
+    #Retorna un Arreglo de Ganancia de Informacion.
     return IG
 
-def calculateEntropy(x,y): #aca es donde muere y X recibe los 20000 registros en vez de los capeados.
+def calculateEntropy(x,y):
+    """
+    Calculo de Entropia ponderada por columna.
+    """
+
     x = np.array(x)
     n = x.shape[0]
     I = 0
+
+    #Valores individuales
     valores_x, ocurrencias_x = np.unique(x, return_counts=True)
-    #print(valores_x)
+    
     count = []
     #arma diccionarios con el conteo de valores que tiene cada particion respecto de las variables objetivo
     for i in range(valores_x.shape[0]):
@@ -38,22 +49,22 @@ def calculateEntropy(x,y): #aca es donde muere y X recibe los 20000 registros en
                     count[i][y[j]] = count[i][y[j]]+1
                 else:
                     count[i][y[j]]=1 
-        #print(count[i])
 
-    
+    #Se calcula la sumatoria para la entropia de valores individuales
     for i in range(valores_x.shape[0]):
         E = ocurrencias_x[i]/n
         partI = 0
         for clase in count[i]:
             pi = count[i][clase]/ocurrencias_x[i]
-            partI -= pi*np.log2(pi)
+            partI -= pi * np.log2(pi)
         I += E*partI
 
-    #print(I)
     return I
 
-# SVD of X based on ppt
 def svd_x(x):
+    """
+    Funcion de SVD.
+    """
     d = x.shape[0]
     N = x.shape[1]
     
@@ -61,18 +72,20 @@ def svd_x(x):
     for i in range(0,d):
         x_mean[i] = x[i] - np.mean(x[i])
     x = x_mean
-    print("SHAPE CULIAO X",x.shape)
 
     y = np.transpose(x) / np.sqrt(N - 1)
-    #print(y, y.shape)
+
     u, s, v = np.linalg.svd(y)
     #20000,40 - (40,40)
     return(v)
 
 def select_variables():
+    """
+    Seleccion de variables que utiliza el SVD.
+    """
     param = mt.load_config_sv()
-    x,y = mt.load_data('fuentes\KDDTrain.txt',0)  
-    
+    x,y = mt.load_data('fuentes\KDDTrain.txt',0) 
+
     relevancia = param[2]
     vectores_singulares = param[3]
 
@@ -86,6 +99,7 @@ def select_variables():
     x = x[idx,:]
     
     v = svd_x(x)
+    #Se cortan todos los datos que sean mayores a los vectores singulares.
     if v.shape[1] > vectores_singulares:
         v = v[:,0:vectores_singulares]
 

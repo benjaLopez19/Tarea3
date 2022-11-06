@@ -1,7 +1,7 @@
 import numpy as np
 import random
 
-#Valores de columna objetivo
+#Valores de columna objetivo guardados en un diccionario
 resultados = {  "normal":1,
                 #DOS
                 'neptune':2, 'teardrop':2, 'smurf':2, 'pod':2, 'back':2,
@@ -15,7 +15,18 @@ resultados = {  "normal":1,
 
 #LECTURA ARCHIVO
 
-def load_config_sv(): 
+def load_config_sv():
+    """
+    Carga de datos de archivo cnf_sv.csv.
+    
+    Param[0]: N. muestrar train     
+    Param[1]: N. muestras test    
+    Param[2]: Valor de relevancia    
+    Param[3]: N. vectores singulares    
+    Param[4]: Clase normal    
+    Param[5]: Clase DOS    
+    Param[6]: Clase Probe
+    """      
     param = np.genfromtxt("configs/cnf_sv.csv",delimiter=',',dtype=None)    
     par=[]    
     par.append(np.int16(param[0])) # N. muestrar train 
@@ -29,10 +40,16 @@ def load_config_sv():
 
 
 def load_data(fname,type):
+    """
+    Carga de datos de archivo. 
+    """
     db  = np.loadtxt(fname, dtype= str, delimiter=",")
+
+    #Guarda los subindices de las matrices a utilizar.
     index = []
 
-    #reduccion de filas
+    ##Reduccion de filas
+
     #Se eliminan los valores no especificados en la ppt para la lista de ataque
     for i in range(db.shape[0]):
         if resultados.get(db[i,41]) is None:
@@ -41,7 +58,8 @@ def load_data(fname,type):
 
     config = load_config_sv()
 
-#====separacion por clase==============================================#
+    
+    #====Separacion por Clase==============================================#
     
     #NORMAL
     if(config[4] == 0):
@@ -50,7 +68,8 @@ def load_data(fname,type):
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 1:
                 aux.append(i)
-        db = np.delete(db,aux,0)  
+        db = np.delete(db,aux,0) 
+    
 
     #DOS
     if(config[5] == 0):
@@ -70,25 +89,24 @@ def load_data(fname,type):
                 aux.append(i)
         db = np.delete(db,aux,0)  
     
-                
-
-
-#====================================TRAIN=============================#
-
+    #====================================TRAIN=============================#
+    
+    #Selecciona el numero de filas de Train segun el config.
     if(type==0):
         aux = random.sample(range(db.shape[0]), config[0])
         aux.sort()
         db = db[aux,:]
     
     
-#=================================TEST=======================================#
+    #=================================TEST=================================#
+    #Selecciona el numero de filas de Train segun el config.
     if (type == 1):
         aux = random.sample(range(db.shape[0]), config[1])
         aux.sort()
         db = db[aux,:]
 
 
-#====================================================================================#
+    #====================================================================================#
 
     aux_y = db[:,41] #Columna con valores objetivos
     y = []
@@ -98,8 +116,7 @@ def load_data(fname,type):
     for i in range(aux_y.size):
         y.append(resultados[aux_y[i]])
  
-    
-    #obtención de diccionarios para convertir variables no numéricas
+    #Obtención de diccionarios para convertir variables no numéricas
     dicts = []
     aux = 0
     for j in [1,2,3]:
@@ -110,20 +127,24 @@ def load_data(fname,type):
                 dicts[aux][str(X[i,j])] = cont
                 cont += 1
         aux +=1
+    
     #reemplazo de variables no numéricas
     aux = 0
     for j in [1,2,3]:
         for i in range(X.shape[0]):
             X[i,j] = dicts[aux][X[i,j]]
         aux +=1
+
     #se transforman los datos a flotante
     X = X.astype(float)
     X = normalizar(X)
     
     return (np.transpose(X),y)
 
-#Guardado de filtro e indices relevantes
 def save_filter(idx,V):
+    """
+    Guardar Index y filtro de Datos V
+    """
     idx_2 = np.asarray(idx)
     idx_2 = np.reshape(idx_2,(idx_2.shape[0],1))
     #print(idx_2)
