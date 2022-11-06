@@ -1,7 +1,4 @@
 import numpy as np
-import time
-import sv 
-import os
 import random
 
 #Valores de columna objetivo
@@ -18,7 +15,7 @@ resultados = {  "normal":1,
 
 #LECTURA ARCHIVO
 
-def load_config_sv():      
+def load_config_sv(): 
     param = np.genfromtxt("configs/cnf_sv.csv",delimiter=',',dtype=None)    
     par=[]    
     par.append(np.int16(param[0])) # N. muestrar train 
@@ -31,7 +28,7 @@ def load_config_sv():
     return(par)
 
 
-def load_data(fname,type,clase):
+def load_data(fname,type):
     db  = np.loadtxt(fname, dtype= str, delimiter=",")
     index = []
 
@@ -53,9 +50,7 @@ def load_data(fname,type,clase):
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 1:
                 aux.append(i)
-        db = np.delete(db,aux,0) 
-    
-    
+        db = np.delete(db,aux,0)  
 
     #DOS
     if(config[5] == 0):
@@ -64,7 +59,6 @@ def load_data(fname,type,clase):
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 2:
                 aux.append(i)
-
         db = np.delete(db,aux,0)  
     
     #Probe
@@ -72,9 +66,8 @@ def load_data(fname,type,clase):
         aux = []
         print("CLASE SELECCIONADA ELIMINADA: Probe")
         for i in range(db.shape[0]):
-            if resultados.get(db[i,41]) == 2:
+            if resultados.get(db[i,41]) == 3:
                 aux.append(i)
-
         db = np.delete(db,aux,0)  
     
                 
@@ -126,6 +119,7 @@ def load_data(fname,type,clase):
     #se transforman los datos a flotante
     X = X.astype(float)
     X = normalizar(X)
+    
     return (np.transpose(X),y)
 
 #Guardado de filtro e indices relevantes
@@ -165,29 +159,6 @@ def normalizar(x):
                     xn[k,j] = 0
                 else:
                     xn[k,j] = ((x_a / x_b) * restab ) + a
-
     return(xn)
 
-def main():
-    param = load_config_sv()
-    start_time = time.time()
-    #current_file = os.getcwd() + "\\fuentes\KDDTrain.txt"
 
-    #print(X,y)
-    #separar datos en X e y
-    #order = sv.inf_gain(X,y)
-    #print(order)
-    #print(normalizar(X))
-    print("*********************")
-    x_train,y_train = sv.select_variables(param[2],param[3])
-
-
-    x_train = np.array(x_train)
-    y_train = np.array(y_train)
-    print(x_train.shape,y_train.shape)
-    #x,y = inf_gain(X,y, par[2]) #parametro 2 es la proporcion de valores que se usará creo, en teoría features*par[2] = k
-    #sacar v con svd, sacar con eso x nuevo 
-    #guardar índice de características más importantes y filter_v
-    print("--- %s seconds ---" % (time.time() - start_time))
-if __name__ == '__main__':   
-	 main()

@@ -11,6 +11,7 @@ def inf_gain(X,y):
         pi = ocurrencias_y[i]/len(y)
         I -= (pi*np.log2(pi))
     print("Entropia variable objetivo",I)
+
     #Entropía ponderada del atributo
     E = []
     for j in range(cols):
@@ -18,6 +19,7 @@ def inf_gain(X,y):
 
         E.append(feature_entropy)
     IG = I-E
+    
     return IG
 
 def calculateEntropy(x,y): #aca es donde muere y X recibe los 20000 registros en vez de los capeados.
@@ -49,13 +51,13 @@ def calculateEntropy(x,y): #aca es donde muere y X recibe los 20000 registros en
 
     #print(I)
     return I
+
 # SVD of X based on ppt
 def svd_x(x):
     d = x.shape[0]
     N = x.shape[1]
     
     x_mean = np.zeros(x.shape)
-    
     for i in range(0,d):
         x_mean[i] = x[i] - np.mean(x[i])
     x = x_mean
@@ -64,20 +66,23 @@ def svd_x(x):
     y = np.transpose(x) / np.sqrt(N - 1)
     #print(y, y.shape)
     u, s, v = np.linalg.svd(y)
-    
+    #20000,40 - (40,40)
     return(v)
 
-def select_variables(relevancia,vectores_singulares):
+def select_variables():
+    param = mt.load_config_sv()
+    x,y = mt.load_data('fuentes\KDDTrain.txt',0)  
     
-    x,y = mt.load_data('fuentes\KDDTrain.txt',0,1)  
-    D,N = x.shape
-   
+    relevancia = param[2]
+    vectores_singulares = param[3]
+
     idx = []
     IG = inf_gain(x,y)
     for i in range(len(IG)):
         if IG[i] > relevancia:
            idx.append(i)
-    
+    print("xselect",x.shape)
+    print("IDX",idx)
     x = x[idx,:]
     
     v = svd_x(x)
@@ -89,3 +94,5 @@ def select_variables(relevancia,vectores_singulares):
     mt.save_filter(idx,v)
 
     return(x,y)
+
+
