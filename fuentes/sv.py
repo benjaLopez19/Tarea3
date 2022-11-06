@@ -109,4 +109,33 @@ def select_variables():
 
     return(x,y)
 
+def main():
+    x,y = select_variables()
+    np.savetxt('dtrn.csv', x, fmt='%d', header=' ',  delimiter=' , ')
+    np.savetxt('etrn.csv', y, fmt='%d', header=' ',  delimiter=' , ')
+
+    #sacar archivo de indices
+    index = np.loadtxt('index_var.csv', dtype= str, delimiter=";")
+
+    #sacar archivo de matriz v
+    v = np.loadtxt('filter.csv', dtype= str, delimiter=";")
+
+    #cargar datos de testeo
+    x_test , y_test = mt.load_data('fuentes/KDDTest.txt',1)
+
+    #filtrar/caracteristicas filas por indice
+    print(y_test)
+
+
+    #filtrar con v (vtraspuesta*x)
+    x_dtst = np.dot(np.transpose(v),x_test)   
+    
+    #crear x como dtst.csv
+    np.savetxt('dtst.csv', x_dtst, fmt='%d', header=' ',  delimiter=' , ')
+    #guardar y como etst.csv
+    np.savetxt('etst.csv', y_dtst, fmt='%d', header=' ',  delimiter=' , ')
+
+
+if __name__ == '__main__':   
+	 main()
 
