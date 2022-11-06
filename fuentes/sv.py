@@ -76,7 +76,7 @@ def svd_x(x):
     y = np.transpose(x) / np.sqrt(N - 1)
 
     u, s, v = np.linalg.svd(y)
-    #20000,40 - (40,40)
+    
     return(v)
 
 def select_variables():
@@ -94,8 +94,8 @@ def select_variables():
     for i in range(len(IG)):
         if IG[i] > relevancia:
            idx.append(i)
-    print("xselect",x.shape)
-    print("IDX",idx)
+    #print("xselect",x.shape)
+    #print("IDX",idx)
     x = x[idx,:]
     
     v = svd_x(x)

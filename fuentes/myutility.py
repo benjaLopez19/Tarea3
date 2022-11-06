@@ -64,7 +64,7 @@ def load_data(fname,type):
     #NORMAL
     if(config[4] == 0):
         aux = []
-        print("CLASE SELECCIONADA ELIMINADA: NORMAL")
+        #print("CLASE SELECCIONADA ELIMINADA: NORMAL")
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 1:
                 aux.append(i)
@@ -74,7 +74,7 @@ def load_data(fname,type):
     #DOS
     if(config[5] == 0):
         aux = []
-        print("CLASE SELECCIONADA ELIMINADA: DOS")
+        #print("CLASE SELECCIONADA ELIMINADA: DOS")
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 2:
                 aux.append(i)
@@ -83,7 +83,7 @@ def load_data(fname,type):
     #Probe
     if(config[6] == 0):
         aux = []
-        print("CLASE SELECCIONADA ELIMINADA: Probe")
+        #print("CLASE SELECCIONADA ELIMINADA: Probe")
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 3:
                 aux.append(i)
