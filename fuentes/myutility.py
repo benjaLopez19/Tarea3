@@ -64,53 +64,96 @@ def load_data(fname,type):
     
     #====Separacion por Clase==============================================#
     
+    ##NORMAL
+    #if(config[4] == 0):
+    #    aux = []
+    #    #print("CLASE SELECCIONADA ELIMINADA: NORMAL")
+    #    for i in range(db.shape[0]):
+    #        if resultados.get(db[i,41]) == 1:
+    #            aux.append(i)
+    #    db = np.delete(db,aux,0) 
+    #
+#
+    ##DOS
+    #if(config[5] == 0):
+    #    aux = []
+    #    #print("CLASE SELECCIONADA ELIMINADA: DOS")
+    #    for i in range(db.shape[0]):
+    #        if resultados.get(db[i,41]) == 2:
+    #            aux.append(i)
+    #    db = np.delete(db,aux,0)  
+    #
+    ##Probe
+    #if(config[6] == 0):
+    #    aux = []
+    #    #print("CLASE SELECCIONADA ELIMINADA: Probe")
+    #    for i in range(db.shape[0]):
+    #        if resultados.get(db[i,41]) == 3:
+    #            aux.append(i)
+    #    db = np.delete(db,aux,0)  
+    
+    if (type == 0):
+        n_muestra = config[0]
+
+    if (type == 1):
+        n_muestra = config[1]
+
+    aux = []
+
     #NORMAL
-    if(config[4] == 0):
-        aux = []
-        #print("CLASE SELECCIONADA ELIMINADA: NORMAL")
+    cont = 0
+    if(config[4] == 1):
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 1:
                 aux.append(i)
-        db = np.delete(db,aux,0) 
+                cont += 1
+            
+            if(cont == n_muestra):
+                break
     
-
     #DOS
-    if(config[5] == 0):
-        aux = []
-        #print("CLASE SELECCIONADA ELIMINADA: DOS")
+    cont = 0
+    if(config[5] == 1):
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 2:
                 aux.append(i)
-        db = np.delete(db,aux,0)  
+                cont += 1
+            
+            if(cont == n_muestra):
+                break
     
     #Probe
-    if(config[6] == 0):
-        aux = []
-        #print("CLASE SELECCIONADA ELIMINADA: Probe")
+    cont = 0
+    if(config[6] == 1):
         for i in range(db.shape[0]):
             if resultados.get(db[i,41]) == 3:
                 aux.append(i)
-        db = np.delete(db,aux,0)  
+                cont += 1
+            
+            if(cont == n_muestra):
+                break
     
+    db = aux
+
     #====================================TRAIN=============================#
     
-    #Selecciona el numero de filas de Train segun el config.
-    if(type==0):
-        aux = random.sample(range(db.shape[0]), config[0])
-        aux.sort()
-        db = db[aux,:]
+    ##Selecciona el numero de filas de Train segun el config.
+    #if(type==0):
+    #    aux = random.sample(range(db.shape[0]), config[0])
+    #    aux.sort()
+    #    db = db[aux,:]
+    #
+    #
+    ##=================================TEST=================================#
+    ##Selecciona el numero de filas de Train segun el config.
+    #if (type == 1):
+    #    aux = random.sample(range(db.shape[0]), config[1])
+    #    aux.sort()
+    #    db = db[aux,:]
+
+
+    #======================================================================#
     
-    
-    #=================================TEST=================================#
-    #Selecciona el numero de filas de Train segun el config.
-    if (type == 1):
-        aux = random.sample(range(db.shape[0]), config[1])
-        aux.sort()
-        db = db[aux,:]
-
-
-    #====================================================================================#
-
     aux_y = db[:,41] #Columna con valores objetivos
     y = []
     X = np.delete(db,41,1) #Resto de la base de datos
