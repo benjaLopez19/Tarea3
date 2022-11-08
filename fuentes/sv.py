@@ -1,6 +1,5 @@
 import numpy as np
 import myutility as mt
-import math
 
 def inf_gain(X,y):
     """
@@ -37,7 +36,7 @@ def calculateEntropy(x,y):
     n = x.shape[0]
     print("X",x)
     
-    n_particiones = math.ceil(math.sqrt(n))
+    n_particiones = np.ceil(np.sqrt(n))
     print("n_particiones", n_particiones)
     print("n",n)
     I = 0
