@@ -1,5 +1,6 @@
 import numpy as np
 import myutility as mt
+import math
 
 def inf_gain(X,y):
     """
@@ -34,9 +35,23 @@ def calculateEntropy(x,y):
 
     x = np.array(x)
     n = x.shape[0]
+    print("X",x)
+    
+    n_particiones = math.ceil(math.sqrt(n))
+    print("n_particiones", n_particiones)
+    print("n",n)
     I = 0
 
     #Valores individuales
+    particiones = np.array_split(x,n_particiones)
+    particiones = np.array(particiones)
+    y_particiones = np.array_split(y,n_particiones)
+    y_particiones = np.array(y_particiones)
+
+    #print("Dimension x",particiones.shape,"Dimension y",y_particiones.shape)
+    #print(particiones,y_particiones)
+
+    '''
     valores_x, ocurrencias_x = np.unique(x, return_counts=True)
     
     count = []
@@ -52,13 +67,29 @@ def calculateEntropy(x,y):
 
     #Se calcula la sumatoria para la entropia de valores individuales
     for i in range(valores_x.shape[0]):
-        E = ocurrencias_x[i]/n
+        E = ocurrencias_x[i]/n #largo de la particion/ n
         partI = 0
         for clase in count[i]:
             pi = count[i][clase]/ocurrencias_x[i]
             partI -= pi * np.log2(pi)
         I += E*partI
-
+    '''
+    for i in range(n_particiones):
+        #se obtiene el conteo de posibles valores objetivo de la i-ésima partición
+        valores_y = np.unique(y_particiones[i])
+        pi = np.zeros(len(valores_y))
+        for j in range(len(valores_y)):
+            for k in range(len(y_particiones[i])):
+                if y_particiones[i][k] == valores_y[j]:
+                    pi[j] += 1
+        #se obtiene la probabilidad de clase
+        E = len(particiones[i])/n
+        pi = pi/(len(particiones[i]))
+        partI = 0
+        for valor_y in range(len(valores_y)):
+            partI -= pi[valor_y] * np.log2(pi[valor_y])
+        I += E*partI
+    print("I",I)
     return I
 
 def svd_x(x):
@@ -90,7 +121,27 @@ def select_variables():
     vectores_singulares = param[3]
 
     idx = []
+
+    #sort
+    aux = [] 
     IG = inf_gain(x,y)
+    for i in (range(len(IG))):
+        aux.append([IG[i],i] #appendea a un auxiliar valor de IG 
+        )
+    #print(aux)
+    #print("")
+    aux = np.array(aux)
+    #print("")
+    #print(aux)
+    aux = aux[aux[:,0].argsort()]
+    #print("")
+    #print(aux)
+    ##################
+    aux = np.flip(aux,0)
+    #print(aux)
+    index = aux[:,1].astype(int) #mis nuevos índices, se supone, porque no sé si el sort está bien
+    print("index",index)
+
     for i in range(len(IG)):
         if IG[i] > relevancia:
            idx.append(i)
@@ -104,7 +155,6 @@ def select_variables():
         v = v[:,0:vectores_singulares]
 
     x = np.dot(np.transpose(v),x)   
-    
     mt.save_filter(idx,v)
 
     return(x,y)

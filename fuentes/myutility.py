@@ -31,14 +31,17 @@ def load_config_sv():
     par=[]    
     par.append(np.int16(param[0])) # N. muestrar train 
     par.append(np.int16(param[1])) # N muestras test
-    par.append(np.float(param[2])) # Valor de relevancia
+    par.append(np.int16(param[2])) # Valor de relevancia
     par.append(np.int16(param[3])) # N vectores singulares  
     par.append(np.int16(param[4])) # Clase normal     
     par.append(np.int16(param[5])) # Clase DOS 
     par.append(np.int16(param[6])) # Clase Probe
     return(par)
 
-
+#N muestras -> ese valor es para sacar N de cada clase
+#valor de relevancia -> lo colocamos nosotros
+#muestras de X en el iésimo subconjunto 
+#cómo sacar ese intervalo?, raiz cuadrada del tamaño de la muestra, redondear hacia arriba
 def load_data(fname,type):
     """
     Carga de datos de archivo. 
