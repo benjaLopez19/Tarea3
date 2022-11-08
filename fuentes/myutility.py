@@ -1,5 +1,4 @@
 import numpy as np
-import random
 
 #Valores de columna objetivo guardados en un diccionario
 resultados = {  "normal":1,
@@ -47,7 +46,6 @@ def load_data(fname,type):
     Carga de datos de archivo. 
     """
     db  = np.loadtxt(fname, dtype= str, delimiter=",")
-
     #Guarda los subindices de las matrices a utilizar.
     index = []
 
@@ -57,40 +55,11 @@ def load_data(fname,type):
     for i in range(db.shape[0]):
         if resultados.get(db[i,41]) is None:
             index.append(i)
+    #print("ELEMENTOS BORRADOS",len(index))
     db = np.delete(db,index,0)
 
     config = load_config_sv()
-
-    
-    #====Separacion por Clase==============================================#
-    
-    ##NORMAL
-    #if(config[4] == 0):
-    #    aux = []
-    #    #print("CLASE SELECCIONADA ELIMINADA: NORMAL")
-    #    for i in range(db.shape[0]):
-    #        if resultados.get(db[i,41]) == 1:
-    #            aux.append(i)
-    #    db = np.delete(db,aux,0) 
-    #
-#
-    ##DOS
-    #if(config[5] == 0):
-    #    aux = []
-    #    #print("CLASE SELECCIONADA ELIMINADA: DOS")
-    #    for i in range(db.shape[0]):
-    #        if resultados.get(db[i,41]) == 2:
-    #            aux.append(i)
-    #    db = np.delete(db,aux,0)  
-    #
-    ##Probe
-    #if(config[6] == 0):
-    #    aux = []
-    #    #print("CLASE SELECCIONADA ELIMINADA: Probe")
-    #    for i in range(db.shape[0]):
-    #        if resultados.get(db[i,41]) == 3:
-    #            aux.append(i)
-    #    db = np.delete(db,aux,0)  
+    print("db shape",db.shape)
     
     if (type == 0):
         n_muestra = config[0]
@@ -133,26 +102,7 @@ def load_data(fname,type):
             if(cont == n_muestra):
                 break
     
-    db = aux
-
-    #====================================TRAIN=============================#
-    
-    ##Selecciona el numero de filas de Train segun el config.
-    #if(type==0):
-    #    aux = random.sample(range(db.shape[0]), config[0])
-    #    aux.sort()
-    #    db = db[aux,:]
-    #
-    #
-    ##=================================TEST=================================#
-    ##Selecciona el numero de filas de Train segun el config.
-    #if (type == 1):
-    #    aux = random.sample(range(db.shape[0]), config[1])
-    #    aux.sort()
-    #    db = db[aux,:]
-
-
-    #======================================================================#
+    db = db[aux,:]
     
     aux_y = db[:,41] #Columna con valores objetivos
     y = []
@@ -161,7 +111,8 @@ def load_data(fname,type):
     #Se cambian valores de la columna objetivo a números
     for i in range(aux_y.size):
         y.append(resultados[aux_y[i]])
- 
+    
+    #print(np.unique(y,return_counts=True))
     #Obtención de diccionarios para convertir variables no numéricas
     dicts = []
     aux = 0
@@ -184,7 +135,7 @@ def load_data(fname,type):
     #se transforman los datos a flotante
     X = X.astype(float)
     X = normalizar(X)
-    
+    print("X shape",X.shape)
     return (np.transpose(X),y)
 
 def save_filter(idx,V):
