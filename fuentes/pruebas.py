@@ -5,6 +5,7 @@ import numpy as np
 import myutility
 
 X,y = sv.select_variables()
+
 X_train, X_test, y_train, y_test = train_test_split(np.transpose(X), y, test_size=0.33, random_state=42)
 
 svc = SVC()

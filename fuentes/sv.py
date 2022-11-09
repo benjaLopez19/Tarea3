@@ -14,7 +14,7 @@ def inf_gain(X,y):
     for i in range(valores_y.size):
         pi = ocurrencias_y[i] / len(y)
         I -= (pi * np.log2(pi))
-    print("Entropia variable objetivo",I)
+    #print("Entropia variable objetivo",I)
     
     #Entropía ponderada del atributo
     E = []
@@ -33,36 +33,22 @@ def calculateEntropy(x,y):
     """
 
     x = np.array(x)
-    n = x.shape[0]
-    #print("X",x)
-    #sortear x e y antes de particionar?
+    n = x.shape[0] #N numero de muestras
+ 
     aux = []
-    #for i in range(x.shape):
-        #aux.append(x[i],i)
-
     index =x.argsort()
     for i in index:
         aux.append(y[i])
     y = aux
-    #aux = aux[aux[:,0].argsort()] #parece que argsort devuelve los indices xddddddddd
-    #index = aux[:,1].astype(int)
-
-
-    ######################################
 
     n_particiones = (np.ceil(np.sqrt(n))).astype(int)
-    #print("n_particiones", n_particiones)
-    #print("n",n)
     I = 0
 
-    #Valores individuales
+    #Se obtienen las particiones del atributo
     particiones = np.array_split(x,n_particiones)
     particiones = np.array(particiones)
     y_particiones = np.array_split(y,n_particiones)
     y_particiones = np.array(y_particiones)
-
-    #print("Dimension x",particiones.shape,"Dimension y",y_particiones.shape)
-    #print(particiones,y_particiones)
 
     for i in range(n_particiones): #Se itera en el número de particiones del atributo
         #se obtiene el conteo de posibles valores objetivo de la i-ésima partición
@@ -79,9 +65,7 @@ def calculateEntropy(x,y):
         for valor_y in range(len(valores_y)): #se calcúla la entropía de la partición
             partI -= pi[valor_y] * np.log2(pi[valor_y])
         I += E*partI #se pondera y se suma a la entropía ponderada total
-  
-    #print("I",I)
-    print("{:.5f}".format(I))
+    #print("{:.5f}".format(I))
     return I
 
 def svd_x(x):
@@ -112,29 +96,18 @@ def select_variables():
     relevancia = param[2]
     vectores_singulares = param[3]
 
-    idx = []
-
     #sort
-    aux = [] 
     IG = inf_gain(x,y)
-    for i in range(len(IG)):
-        print("Ganancia variable",i,"{:.5f}".format(IG[i]),)
 
-    for i in (range(len(IG))):
-        aux.append([IG[i],i] #appendea a un auxiliar valor de IG 
-        )
     index = IG.argsort()
     index = np.flip(index,0)
 
     index = index[:relevancia]
-    print("index",index)
-    for i in range(len(IG)):
-        if IG[i] > relevancia:
-           idx.append(i)
+
     #print("xselect",x.shape)
     #print("IDX",idx)
     x = x[index,:]
-    print(x.shape)
+    #print(x.shape)
     v = svd_x(x)
     #Se cortan todos los datos que sean mayores a los vectores singulares.
     if v.shape[1] > vectores_singulares:
