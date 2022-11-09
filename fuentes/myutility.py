@@ -37,10 +37,6 @@ def load_config_sv():
     par.append(np.int16(param[6])) # Clase Probe
     return(par)
 
-#N muestras -> ese valor es para sacar N de cada clase
-#valor de relevancia -> lo colocamos nosotros
-#muestras de X en el iésimo subconjunto 
-#cómo sacar ese intervalo?, raiz cuadrada del tamaño de la muestra, redondear hacia arriba
 def load_data(fname,type):
     """
     Carga de datos de archivo. 
@@ -49,13 +45,11 @@ def load_data(fname,type):
     #Guarda los subindices de las matrices a utilizar.
     index = []
 
-    ##Reduccion de filas
-
     #Se eliminan los valores no especificados en la ppt para la lista de ataque
     for i in range(db.shape[0]):
         if resultados.get(db[i,41]) is None:
             index.append(i)
-    #print("ELEMENTOS BORRADOS",len(index))
+            
     db = np.delete(db,index,0)
 
     config = load_config_sv()
