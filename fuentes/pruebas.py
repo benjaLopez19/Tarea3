@@ -19,3 +19,7 @@ X_train, X_test, y_train, y_test = train_test_split(np.transpose(X), y, test_siz
 
 svc.fit(X_train,y_train)
 print(svc.score(X_test,y_test))
+
+print("MIN   MAX")
+for i in X:
+    print(min(i),max(i))
