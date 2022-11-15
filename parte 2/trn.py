@@ -5,6 +5,15 @@ import numpy    as np
 import util_pso as pso
 import util_bp  as bp
 
+#Entrenar con PSO
+    #Crear archivo de costo del MSE
+        #costo_pso.csv [Nx1]
+#Entrenar con backpropagation
+    #crear archivo de costo del MSE
+        #costo_gd.csv [Nx1]
+#Crear archivo de pesos entrenados
+    #pesos.npz
+
 # Load Parameters
 def load_config():
     ...

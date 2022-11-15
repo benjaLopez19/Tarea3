@@ -2,6 +2,12 @@
 import numpy   as np
 import util_bp as bp
 
+#Carga data de testing
+#Crear archivo de matriz de confusion
+    #cmatriz.csv (cuadrada)
+# Crear archivo F-scores
+    #fsocres.csv [Nx1] - ultima pos es el valor promedio de los fscores. previos.
+
 # Test: Load data 
 def load_data():
     ...    
