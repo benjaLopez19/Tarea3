@@ -16,7 +16,19 @@ import util_bp  as bp
 
 # Load Parameters
 def load_config():
-    ...
+    '''
+    pso
+
+0 : Número Activación Oculta : 2
+1 : Número Nodos Ocultos : 20
+2 : Número de Partículas : 25
+3 : Número Iteraciones : 500
+
+bp
+
+Línea 1 : Número Iteraciones : 2000
+Línea 2 : Tasa de Aprendizaje : 0.1
+    '''
     return(param)
 # Load data of training
 def load_data():
@@ -29,13 +41,43 @@ def save_w():
 
 # Training: ANN-BP
 def ann_bp(w1,w2,x,y,..):
+    #PREGUNTAR BIEN LA ESTRUCTURA DEL BACKWARD
     ...    
     return(w1,w2)
 
 # Training : ANN-PSO
-def ann_pso(x,y,...):
-    ...    
-    return(w1,w2)
+def ann_pso(x,y,param,...):
+    X = ut.iniSwarm(param[1],param[2],x.shape[0])
+    P = {}
+    P['Pos']   = np.zeros(X.shape)               #Best particle position
+    #print(P['Pos'].shape)
+    P['Fit']   = np.ones((1,X.shape[0]))*np.inf  #Best particle fitness
+    P['gBest'] = np.zeros((1,X.shape[1]))        #Best global solution
+    #print(P['gBest'].shape)
+    P['gFit']  = np.inf                          #Best global Fitness
+    V          = np.zeros(X.shape)               #Velicity  Initial        
+    w2Best= np.zeros((1,param[1]))               #Best  output weight     
+    Cost  = []
+             
+    for iTer in range(param[0]):
+        w2,costo = pso.Fitness_mse(x,y,X)
+        #print(costo)
+        P,w2Best = pso.upd_pFitness(P,w2,costo,w2Best,X)
+        #X = ut.upd_swarm(param[0], iTer, X, P['Pos'], P['gBest'])
+        V,X = pso.upd_veloc(P,V,X,iTer,param[0])
+
+        #X = X + V
+        Cost.append(P['gFit'])
+        '''
+        if ((iTer % 50)== 0):
+            print('Iter={} Cost= {:.5f}'.format(iTer,Cost[-1])) 
+        '''
+    w1= P['gBest']
+    #
+    return(w1,w2Best)
+    #PREGUNTAR QUÉ WEA ES EL PESO 2
+    #PREGUNTAR FORMATO DE RED Y PESOS
+
 # Training:ANN-PSO and  ANN-BP
 def train_ann(x,y,param):
     w1,w2 = ann_pso(x,y,...)
@@ -46,7 +88,7 @@ def train_ann(x,y,param):
 def main():
     param   = load_config()            
     xe,ye   = load_data()   
-    w1,w2   = ann_train(xe,ye,param)             
+    w1,w2   = train_ann(xe,ye,param)             
     save_w(w1,w2)
        
 if __name__ == '__main__':   

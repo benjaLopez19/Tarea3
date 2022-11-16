@@ -13,9 +13,10 @@ def randW(next,prev):
 # Feed-forward of the ANN
 def forward(x,W):        
     ...    
-    return()
+    return(y)
 
 #Activation function
+#como programarla
 def act_function(z):
     ...
     return()

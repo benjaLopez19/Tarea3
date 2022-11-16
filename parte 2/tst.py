@@ -23,7 +23,7 @@ def metricas():
 
 def main():			
 	xv,yv,w1,w2 = load_data()	
-	zv          = bp.forward()      		
+	zv          = bp.forward(xv,[w1,w2])      		
 	metricas(yv,zv) 	
 
 # Beginning ...
