@@ -101,6 +101,7 @@ def load_data(fname,type):
     aux_y = db[:,41] #Columna con valores objetivos
     y = []
     X = np.delete(db,41,1) #Resto de la base de datos
+    X = np.delete(db,41,1) #Resto de la base de datos
 
     #Se cambian valores de la columna objetivo a números
     for i in range(aux_y.size):

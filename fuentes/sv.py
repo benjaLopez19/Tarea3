@@ -8,13 +8,16 @@ def inf_gain(X,y):
     cols = X.shape[0]
     rows = X.shape[1]
 
-    #Entropía de y o entropia de clase
+    #Entropía de y; O entropia de clase
     I = 0
     valores_y, ocurrencias_y = np.unique(y,return_counts=True)
+    #print(valores_y,ocurrencias_y,len(y))
     for i in range(valores_y.size):
         pi = ocurrencias_y[i] / len(y)
-        I -= (pi * np.log2(pi))
-    #print("Entropia variable objetivo",I)
+        #print(pi, np.log(pi))
+        I -= (pi * np.log(pi))
+        #print(I)
+    print("Entropia variable objetivo",I)
     
     #Entropía ponderada del atributo
     E = []
@@ -22,6 +25,7 @@ def inf_gain(X,y):
         feature_entropy = calculateEntropy(X[j,:],y)
         E.append(feature_entropy)
 
+    print(E)
     IG = I-E
 
     #Retorna un Arreglo de Ganancia de Informacion.
@@ -34,38 +38,34 @@ def calculateEntropy(x,y):
 
     x = np.array(x)
     n = x.shape[0] #N numero de muestras
- 
-    aux = []
-    index =x.argsort()
-    for i in index:
-        aux.append(y[i])
-    y = aux
 
-    n_particiones = (np.ceil(np.sqrt(n))).astype(int)
+    n_particiones = (np.ceil(np.sqrt(n))).astype(int) # numero de particiones
+
+    particiones = np.linspace(min(x),max(x),num = n_particiones)
+    #print(particiones,n_particiones)
     I = 0
 
-    #Se obtienen las particiones del atributo
-    particiones = np.array_split(x,n_particiones)
-    particiones = np.array(particiones)
-    y_particiones = np.array_split(y,n_particiones)
-    y_particiones = np.array(y_particiones)
-
-    for i in range(n_particiones): #Se itera en el número de particiones del atributo
-        #se obtiene el conteo de posibles valores objetivo de la i-ésima partición
-        valores_y = np.unique(y_particiones[i])#se extraen los valores posibles de y
+    for i in range(n_particiones-1):
+        valores_y = np.unique(y)#se extraen los valores posibles de y
         pi = np.zeros(len(valores_y))# se inicializa un arreglo para hacer conteo de instancias de cada valor de y
-        for j in range(len(valores_y)):#se itera en los valores de y
-            for k in range(len(y_particiones[i])):#se itera sobre el largo de la partición actual
-                if y_particiones[i][k] == valores_y[j]:#si el valor actual de la partición actual es igual al posible valor de y sobre el que se itera
-                    pi[j] += 1 #se añade uno al contador
-        #Cálculo de la entropía de la partición
-        E = len(particiones[i])/n #se obtiene la ponderación del largo de la partición
-        pi = pi/(len(particiones[i])) #se obtienen las probabilidades de los posibles valores de y en la partición
-        partI = 0
-        for valor_y in range(len(valores_y)): #se calcúla la entropía de la partición
-            partI -= pi[valor_y] * np.log2(pi[valor_y])
-        I += E*partI #se pondera y se suma a la entropía ponderada total
-    #print("{:.5f}".format(I))
+
+        for j in range(len(valores_y)): #se hace conteo de valores de i
+            for k in range(len(x)): #se recorre el atributo
+                if (particiones[i] <= x[k]) & (x[k] < particiones[i+1]): #si x está dentro de la partición
+                    if(y[k] == valores_y[j]): #si es igual al valor y en que se itera
+                        pi[j] += 1 #se suma uno 
+
+        #calculo entropía de la particion
+        if(pi.sum() != 0): #se asegura que no haya 0 instancias en la partición
+            E = pi.sum()/n #se obtiene la ponderación del largo de la partición
+            pi = pi/(pi.sum()) #se obtienen las probabilidades de los posibles valores de y en la partición
+            partI = 0
+            for valor_y in range(len(valores_y)): #se calcula la entropía de la partición
+                if pi[valor_y] == 0:
+                    continue
+                partI -= pi[valor_y] * np.log(pi[valor_y])
+            I += E*partI #se pondera y se suma a la entropía ponderada total
+
     return I
 
 def svd_x(x):
@@ -99,6 +99,7 @@ def select_variables():
     #sort
     IG = inf_gain(x,y)
 
+    #print(IG)
     index = IG.argsort()
     index = np.flip(index,0)
 
