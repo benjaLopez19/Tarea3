@@ -10,12 +10,14 @@ def inf_gain(X,y):
 
     #Entropía de y; O entropia de clase
     I = 0
+    #n_particiones = (np.ceil(np.sqrt(n))).astype(int)
     valores_y, ocurrencias_y = np.unique(y,return_counts=True)
     #print(valores_y,ocurrencias_y,len(y))
     for i in range(valores_y.size):
         pi = ocurrencias_y[i] / len(y)
-        #print(pi, np.log(pi))
-        I -= (pi * np.log(pi))
+        print(pi, np.log(pi), len(y))
+        I -= (pi * np.log2(pi))
+        #I = I /np.log2(n_particiones)
         #print(I)
     print("Entropia variable objetivo",I)
     
@@ -24,7 +26,7 @@ def inf_gain(X,y):
     for j in range(cols):
         feature_entropy = calculateEntropy(X[j,:],y)
         E.append(feature_entropy)
-
+    
     print(E)
     IG = I-E
 
@@ -63,7 +65,8 @@ def calculateEntropy(x,y):
             for valor_y in range(len(valores_y)): #se calcula la entropía de la partición
                 if pi[valor_y] == 0:
                     continue
-                partI -= pi[valor_y] * np.log(pi[valor_y])
+                partI -= pi[valor_y] * np.log2(pi[valor_y])
+                #normalizar
             I += E*partI #se pondera y se suma a la entropía ponderada total
 
     return I
@@ -91,7 +94,12 @@ def select_variables():
     Seleccion de variables que utiliza ganancia de información y reducción de redunancia con SVD.
     """
     param = mt.load_config_sv()
-    x,y = mt.load_data('fuentes\KDDTrain.txt',0) 
+    #x,y = mt.load_data('fuentes\KDDTrain.txt',0) 
+    
+    db = np.loadtxt('fuentes\dtrn.csv', dtype= float, delimiter=",")
+    y = db[:,41] #Columna con valores objetivos
+    x = np.delete(db,41,1) #Resto de la base de datos
+    x = np.transpose(x)
 
     relevancia = param[2]
     vectores_singulares = param[3]
@@ -121,8 +129,9 @@ def select_variables():
 
 def main():
     x,y = select_variables()
-    np.savetxt('dtrn.csv', x, fmt='%d', header=' ',  delimiter=' , ')
-    np.savetxt('etrn.csv', y, fmt='%d', header=' ',  delimiter=' , ')
+    
+    np.savetxt('dtrn.csv', x, fmt='%.3f',  delimiter=' , ')
+    np.savetxt('etrn.csv', y, fmt='%d',  delimiter=' , ')
 
     #sacar archivo de indices
     index = np.loadtxt('index_var.csv', dtype= int, delimiter=";")
@@ -131,7 +140,11 @@ def main():
     v = np.loadtxt('filter.csv', dtype= int, delimiter=";")
 
     #cargar datos de testeo
-    x_test , y_test = mt.load_data('fuentes/KDDTest.txt',1)
+    db = np.loadtxt('fuentes\dtrn.csv', dtype= float, delimiter=",")
+    y_test  = db[:,41] #Columna con valores objetivos
+    x_test = np.delete(db,41,1) #Resto de la base de datos
+    x_test = np.transpose(x_test)
+    #x_test, y_test = mt.load_data('fuentes\KDDTest.txt',1)
 
     #filtrar/caracteristicas filas por indice
     x_test = x_test[index,:]
@@ -139,9 +152,9 @@ def main():
     x_dtst = np.dot(np.transpose(v),x_test)   
 
     #crear x como dtst.csv
-    np.savetxt('dtst.csv', x_dtst, fmt='%d', header=' ',  delimiter=' , ')
+    np.savetxt('dtst.csv', x_dtst, fmt='%.3f',  delimiter=' , ')
     #guardar y como etst.csv
-    np.savetxt('etst.csv', y_test, fmt='%d', header=' ',  delimiter=' , ')
+    np.savetxt('etst.csv', y_test, fmt='%d',  delimiter=' , ')
 
 
 if __name__ == '__main__':   

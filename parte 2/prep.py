@@ -20,20 +20,21 @@ def load_data(type):
     Parameter type: 0 para training o 1 para test'''
 
     if type == 0:
-        dtrn = np.loadtxt('dtrn.csv', dtype= str, delimiter=",")
-        etrn = np.loadtxt('etrn.csv', dtype= str, delimiter=",")
+        dtrn = np.loadtxt('dtrn.csv', dtype= float, delimiter=",")
+        etrn = np.loadtxt('etrn.csv', dtype= int, delimiter=",")
 
         xtrn = norma_data(dtrn)
-        random.shuffle(xtrn)
+        #index = random.shuffle(etrn)
+        #xtrn = 
 
         ytrn = label_binary(etrn)
-
-        np.savetxt('xtrn.csv', xtrn, fmt='%d', header=' ',  delimiter=' , ')
-        np.savetxt('ytrn.csv', ytrn, fmt='%d', header=' ',  delimiter=' , ')
+        print("hola")
+        np.savetxt('xtrn.csv', xtrn, fmt='%.3f',  delimiter=' , ')
+        np.savetxt('ytrn.csv', ytrn, fmt='%d',  delimiter=' , ')
 
     if type == 1:
-        dtst = np.loadtxt('dtst.csv', dtype= str, delimiter=",")
-        etst = np.loadtxt('etst.csv', dtype= str, delimiter=",")
+        dtst = np.loadtxt('dtst.csv', dtype= float, delimiter=",")
+        etst = np.loadtxt('etst.csv', dtype= int, delimiter=",")
 
         xtst = norma_data(dtst)
         random.shuffle(xtst)
@@ -85,18 +86,21 @@ def label_binary(data):
     for x in data:
         match x:
             case 1:
-                ydata.append([1,0,0])
+                ydata.append([1,0])
             case 2:
-                ydata.append([0,1,0])
-            case 3:
-                ydata.append([0,0,1])
+                ydata.append([0,1])
+            #case 3:
+                #ydata.append([0,0,1])
         continue
 
     return(ydata)
 
-
-
-
+def main():
+    load_data(0)
+    return()
+    
+if __name__ == '__main__':   
+	 main()
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
 

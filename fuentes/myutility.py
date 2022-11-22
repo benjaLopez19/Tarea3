@@ -129,7 +129,7 @@ def load_data(fname,type):
 
     #se transforman los datos a flotante
     X = X.astype(float)
-    X = normalizar(X)
+    #X = normalizar(X)
     print("X shape",X.shape)
     return (np.transpose(X),y)
 
