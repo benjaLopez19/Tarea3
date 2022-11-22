@@ -131,6 +131,7 @@ def load_data(fname,type):
     X = X.astype(float)
     #X = normalizar(X)
     print("X shape",X.shape)
+    
     return (np.transpose(X),y)
 
 def save_filter(idx,V):

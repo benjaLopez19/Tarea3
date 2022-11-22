@@ -13,36 +13,60 @@ import random
 
 
 # Load data 
-def load_data(type):
+def load_data():
     '''Carga la informacion de los archivos
     Crea los archivos de datos 
-    
-    Parameter type: 0 para training o 1 para test'''
+    '''
 
-    if type == 0:
-        dtrn = np.loadtxt('dtrn.csv', dtype= float, delimiter=",")
-        etrn = np.loadtxt('etrn.csv', dtype= int, delimiter=",")
+    index = np.loadtxt('index_var.csv', dtype= int, delimiter=";")
+    v = np.loadtxt('filter.csv', dtype= int, delimiter=";")
 
-        xtrn = norma_data(dtrn)
-        #index = random.shuffle(etrn)
-        #xtrn = 
+    ################Training##############################
+    dtrn = np.loadtxt('dtrn.csv', dtype= float, delimiter=",")
+    etrn = np.loadtxt('etrn.csv', dtype= int, delimiter=",")
+    #A = np.loadtxt('fuentes\KDDTrain.txt', dtype= int, delimiter=",")
+    #print("shaaaape",dtrn.shape)
+    A = np.vstack([dtrn, etrn])
+    A = np.transpose(A)
+    np.random.shuffle(A)
+    A= np.transpose(A)
+    dtrn = A[0:40,:]
+    etrn = A[42,:]
+    #print(etrn)
 
-        ytrn = label_binary(etrn)
-        print("hola")
-        np.savetxt('xtrn.csv', xtrn, fmt='%.3f',  delimiter=' , ')
-        np.savetxt('ytrn.csv', ytrn, fmt='%d',  delimiter=' , ')
+    dtrn = dtrn[index,:]
+    #filtrar con v (vtraspuesta*x)
+    xtrn = np.dot(np.transpose(v),dtrn)  
 
-    if type == 1:
-        dtst = np.loadtxt('dtst.csv', dtype= float, delimiter=",")
-        etst = np.loadtxt('etst.csv', dtype= int, delimiter=",")
+    xtrn = norma_data(xtrn)
+    #print(xtrn.shape)
+    ytrn = label_binary(etrn)
+    #print(ytrn.shape)
+    np.savetxt('xtrn.csv', xtrn, fmt='%.3f',  delimiter=' , ')
+    np.savetxt('ytrn.csv', ytrn, fmt='%d',  delimiter=' , ')
 
-        xtst = norma_data(dtst)
-        random.shuffle(xtst)
+    ################Testing##############################
+    dtst = np.loadtxt('dtst.csv', dtype= float, delimiter=",")
+    etst = np.loadtxt('etst.csv', dtype= int, delimiter=",")
 
-        ytst = label_binary(etst)
+    A = np.vstack([dtst, etst])
+    A = np.transpose(A)
+    np.random.shuffle(A)
+    A= np.transpose(A)
+        
+    dtst = A[0:40,:]
+    etst = A[42,:]
 
-        np.savetxt('xtst.csv', xtst, fmt='%d', header=' ',  delimiter=' , ')
-        np.savetxt('ytst.csv', ytst, fmt='%d', header=' ',  delimiter=' , ')
+    dtst = dtst[index,:]
+    #filtrar con v (vtraspuesta*x)
+    dtst = np.dot(np.transpose(v),dtst)  
+
+    xtst = norma_data(dtst)
+
+    ytst = label_binary(etst)
+
+    np.savetxt('xtst.csv', xtst, fmt='%.3f',  delimiter=' , ')
+    np.savetxt('ytst.csv', ytst, fmt='%d',  delimiter=' , ')
 
     return()
 
@@ -92,11 +116,13 @@ def label_binary(data):
             #case 3:
                 #ydata.append([0,0,1])
         continue
+    
+    ydata = np.array(ydata)
 
     return(ydata)
 
 def main():
-    load_data(0)
+    load_data()
     return()
     
 if __name__ == '__main__':   

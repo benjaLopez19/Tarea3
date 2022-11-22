@@ -96,12 +96,27 @@ def upd_veloc(P,V,X,iTerA, iTerT):
     for i in range(0,V.shape[0]):
         
         aux[i] = (a * V[i]) + (c1*r1)*(P['Pos'][i] - X[i]) + (c2*r2)*((P['gBest']) - X[i])
-  
     V = aux
     #print(V[0])
     print(X[0][0])
     X = X +V
+    X = bound(X)
     return(V,X) 
-  
+
+def bound(a):
+
+    for i in a:
+        #print(i)
+        for j in i:
+            if j >= 1:
+                
+                #print(j)
+                j =0
+                #print(j)
+            elif j <= -1:
+                #print(i)
+                j=0
+                #print(j)
+    return a
     
 #-----------------------------------------------------------------------

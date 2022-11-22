@@ -128,6 +128,7 @@ def select_variables():
     return(x,y)
 
 def main():
+    
     x,y = select_variables()
     
     np.savetxt('dtrn.csv', x, fmt='%.3f',  delimiter=' , ')
@@ -140,11 +141,13 @@ def main():
     v = np.loadtxt('filter.csv', dtype= int, delimiter=";")
 
     #cargar datos de testeo
+    '''
     db = np.loadtxt('fuentes\dtrn.csv', dtype= float, delimiter=",")
     y_test  = db[:,41] #Columna con valores objetivos
     x_test = np.delete(db,41,1) #Resto de la base de datos
     x_test = np.transpose(x_test)
-    #x_test, y_test = mt.load_data('fuentes\KDDTest.txt',1)
+    '''
+    x_test, y_test = mt.load_data('fuentes\KDDTest.txt',1)
 
     #filtrar/caracteristicas filas por indice
     x_test = x_test[index,:]
@@ -155,7 +158,7 @@ def main():
     np.savetxt('dtst.csv', x_dtst, fmt='%.3f',  delimiter=' , ')
     #guardar y como etst.csv
     np.savetxt('etst.csv', y_test, fmt='%d',  delimiter=' , ')
-
+    
 
 if __name__ == '__main__':   
 	 main()
