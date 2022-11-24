@@ -1,6 +1,5 @@
 # Training: IDS ANN-PSO-BP
 
-import pandas   as pd
 import numpy    as np
 import util_pso as pso
 import util_bp  as bp
@@ -24,8 +23,8 @@ def load_config():
 2 : Número de Partículas : 25
 3 : Número Iteraciones : 500
 
-bp
-
+    bp
+ 
 Línea 1 : Número Iteraciones : 2000
 Línea 2 : Tasa de Aprendizaje : 0.1
     '''
@@ -53,31 +52,37 @@ def load_data():
     return(x,y)
 
 #save weights in numpy format
-def save_w():
-    #...
-    return
+def save_w(w1,w2):
+
+    #data = np.array(cost)
+    np.savez('pesos_ann.npz', x = w1, y = w2)
+    #np.savetxt('costos_ann.csv', data, fmt='%1.13f', header=' ',  delimiter=' ; ')  
+
+    return()
+
 
 # Training: ANN-BP
 def ann_bp(w1,w2,x,y):
     #PREGUNTAR BIEN LA ESTRUCTURA DEL BACKWARD
-    #...    
+    #np.savetxt('costo_bp.csv', Cost, fmt='%1.13f', header=' ',  delimiter=' ; ')
     return(w1,w2)
 
 # Training : ANN-PSO
 def ann_pso(x,y,param):    
-    X = pso.iniSwarm(param[1],param[2],x.shape[0])
+    X = pso.iniSwarm(param[1],param[2],x.shape[0]) # inicializa el enjambre
     P = {}
     P['Pos']   = np.zeros(X.shape)               #Best particle position
-    print(P['Pos'].shape)
-    P['Fit']   = np.ones((1,X.shape[0]))*np.inf  #Best particle fitness
-    P['gBest'] = np.zeros((1,X.shape[1]*2))        #Best global solution
+    #print(P['Pos'].shape)
+    P['Fit']   = np.ones((1,X.shape[0]))*5000  #Best particle fitness
+    P['gBest'] = np.zeros((1,X.shape[1]*2))    #Best global solution
     #print(P['gBest'].shape)
     P['gFit']  = np.inf                          #Best global Fitness
     V          = np.zeros(X.shape)               #Velicity  Initial        
     Cost  = []
     
-    for iTer in range(param[3]):
+    for iTer in range(param[3]): #iter en numero de iteraciones
         costo = pso.Fitness_mse(x,y,X, param[0], param[1]) #base de datos, objetivo real, particulas, activación
+        #print(costo)
         P = pso.upd_pFitness(P,costo,X)
         #print(P["Pos"][0])
         #X = ut.upd_swarm(param[0], iTer, X, P['Pos'], P['gBest'])
@@ -97,10 +102,9 @@ def ann_pso(x,y,param):
     #print(param[1]*x.shape[0])
     W1 = np.reshape(w[0:param[1]*x.shape[0]],(param[1],x.shape[0])) #se separan los pesos
     W2 = np.reshape(w[param[1]*x.shape[0]:],(2,param[1]))
+    #np.savetxt('costo_pso.csv', Cost, fmt='%1.13f', header=' ',  delimiter=' ; ')
     #
     return(W1,W2)
-    #PREGUNTAR QUÉ WEA ES EL PESO 2
-    #PREGUNTAR FORMATO DE RED Y PESOS
 
 # Training:ANN-PSO and  ANN-BP
 def train_ann(x,y,param):
@@ -113,7 +117,7 @@ def main():
     param   = load_config()           
     xe,ye   = load_data()   
     w1,w2   = train_ann(xe,ye,param)             
-    #save_w(w1,w2)
+    save_w(w1,w2)
        
 if __name__ == '__main__':   
 	 main()

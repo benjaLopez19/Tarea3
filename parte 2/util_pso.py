@@ -39,11 +39,12 @@ def Fitness_mse(x,y,X,act,Nh):
     act: funciond de activacion
     Nh: numero de nodos ocultos
     '''
+    n = y.shape[1]
     d = x.shape[0] #cantidad de variables
     N = x.shape[1] #cantidad de muestras
     Np = X.shape[0] #cantidad de particulas
     MSE = [] #error cuadráticos medio
-    e = np.zeros((1,N))
+    #e = np.zeros((1,N))
     for i in range(Np): #Error por cada partícula
         p = X[i,:] #saca una partícula
         #print(p.shape)
@@ -55,8 +56,7 @@ def Fitness_mse(x,y,X,act,Nh):
         
         #print("YPRED",y_pred.shape)
 
-        error = y_pred - y
-        mseAux = np.mean((y_pred - y) ** 2) #norma del error al cuadrado
+        mseAux = np.mean((y_pred - y)) ** 2
         MSE.append(mseAux)
     
     return(MSE)
@@ -83,28 +83,55 @@ def upd_veloc(P,V,X,iTerA, iTerT):
     a_min = 0.1
     a_max = 0.95
    
-    c1 = 1.05
-    c2 = 2.95
+    c1 = 1
+    c2 = 2
     a = a_max - (((a_max -a_min)/iTerT) * iTerA)
+    print('a', a)
     #print("ramdon 1",r1,"ramdom2",r2)
-    aux = V
-    aux_2 = X
+    aux = np.copy(V)
     
     r1 = np.random.random()
     r2 = np.random.random()
     #print(P["Pos"][0],X[0])
     for i in range(0,V.shape[0]):
-        
-        aux[i] = (a * V[i]) + (c1*r1)*(P['Pos'][i] - X[i]) + (c2*r2)*((P['gBest']) - X[i])
+        #print('v[I]',V[i])
+        #print("P['Pos'][i] - X[i]",P['Pos'][i] - X[i])
+        #print("P['gBest']) - X[i]",(P['gBest']) - X[i])
+        aux[i] = (a*V[i]) + ((c1*r1)*(P['Pos'][i] - X[i])) + ((c2*r2)*((P['gBest']) - X[i]))
+
     V = aux
+    V = bound_vel(V)
     #print(V[0])
     print(X[0][0])
     X = X +V
     X = bound(X)
+    #print('vel maxima',np.amax(V))
     return(V,X) 
 
 def bound(a):
 
+    #a = np.clip(a,-500,500,out=0)
+
+    for i in range(a.shape[0]):
+        for j in range(a.shape[1]):
+            if a[i][j] > 499:
+                a[i][j] =0
+            elif a[i][j] <-499:
+                a[i][j] =0
+            
+    return a
+
+def bound_vel(a):
+
+    #a = np.clip(a,-500,500,out=0)
+
+    for i in range(a.shape[0]):
+        for j in range(a.shape[1]):
+            if a[i][j] > 20:
+                a[i][j] =0
+            elif a[i][j] <-20:
+                a[i][j] =0
+    '''
     for i in a:
         #print(i)
         for j in i:
@@ -117,6 +144,7 @@ def bound(a):
                 #print(i)
                 j=0
                 #print(j)
+    '''
     return a
     
 #-----------------------------------------------------------------------

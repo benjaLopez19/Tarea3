@@ -67,7 +67,8 @@ def forward(x, W1, W2, n_param):
 #Activation function
 #como programarla
 def act_function(z,n_param):
-    
+    z = np.clip(z,-500,500)
+
     match n_param:
         case 1: #ReLu
             return np.maximum(z,0)
@@ -136,12 +137,11 @@ def ann_gradW(m,salida,n_param,y,W1,W2,X):#
     X base de datos
     '''
     dZ2 =  salida[3] - y
-
-    dW2 = 1 / m * dZ2.dot(salida[1].T)
+    dW2 = (1 / m) * dZ2.dot(salida[1].T)
 
     dZ1 = W2.T.dot(dZ2) * derivate_act(salida[0],n_param)
     #print(dZ1)
-    dW1 = 1 / m * dZ1.dot(X.T)
+    dW1 = (1 / m) * dZ1.dot(X.T)
    
     return dW1, dW2
     
@@ -181,6 +181,11 @@ def main():
     W1, W2 = randW(param[1], m)
     print(W1.shape,W2.shape)
     
+    salida = forward(x, W1, W2, param[0])
+    salida = np.array(salida)
+    print(salida[3].shape)
+    print(salida[3])
+
     for i in range(param[4]):
         salida = forward(x, W1, W2, param[0])
         #print("salida",salida[3])
@@ -194,7 +199,7 @@ def main():
     
     salida = forward(x, W1, W2, param[0])
     
-    #print(salida[3])
+    print(salida[3])
     #print(y)
     return ()
 
