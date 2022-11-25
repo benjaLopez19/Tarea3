@@ -61,7 +61,7 @@ def forward(x, W1, W2, n_param):
     y_pred = act_function(Z2,5)
     #print(y_pred)
     y_pred = np.array(y_pred)
-    #print(W1.shape,W2.shape)
+    print(y_pred.shape)
     return([Z1,H,Z2,y_pred])
 
 #Activation function
@@ -71,7 +71,7 @@ def act_function(z,n_param):
 
     match n_param:
         case 1: #ReLu
-            return np.maximum(z,0)
+            return np.maximum(0,z)
 
         case 2: #L-ReLu
             if z<0:
@@ -80,10 +80,7 @@ def act_function(z,n_param):
                 return z
         case 3: #ELU
             alpha = 1.6732
-            if z<=0:
-                return alpha*(np.exp(z)-1)
-            else:
-                return z
+            return np.where(z > 0, z, alpha * (np.exp(z) - 1))
 
         case 4: #SELU
             alpha = 1.6732
@@ -103,16 +100,13 @@ def derivate_act(z,n_param):
             return z > 0
         
         case 2: #L-ReLu
-            if z<0:
-                return z*0.01
-            else:
-                return z
+            out = np.ones_like(z)
+            out[z < 0] *= 0.01
+
+            return out
+
         case 3: #ELU
-            alpha = 1.6732
-            if z<=0:
-                return alpha*(np.exp(z)-1)
-            else:
-                return z
+            return np.where(z > 0, np.ones_like(z), 0.01 * np.exp(z))
 
         case 4: #SELU
             alpha = 1.6732
@@ -123,38 +117,38 @@ def derivate_act(z,n_param):
                 return Lambda*z
         
         case 5: #Sigmodidal
-            return z*(1-z)
+            #return z*(1-z)
+            return  1/(1+np.exp(-z)) * (1-1/(1+np.exp(-z))) #sigmoid(z)*(1-sigmoid(z))
     return()
 # STEP 2: Feed-Backward: 
 def ann_gradW(m,salida,n_param,y,W1,W2,X):#    
     '''
     m numero de variables
-    salida parametros entregados por forward
+    salida parametros entregados por forward: [Z1,H,Z2,y_pred]
     n_param funcion activacion capa oculta
     y valores reales
     W1 pesos capa oculta
     W2 pesos capa salida
     X base de datos
     '''
-    dZ2 =  salida[3] - y
-    dW2 = (1 / m) * dZ2.dot(salida[1].T)
 
-    dZ1 = W2.T.dot(dZ2) * derivate_act(salida[0],n_param)
-    #print(dZ1)
-    dW1 = (1 / m) * dZ1.dot(X.T)
-   
-    return dW1, dW2
+    error_capa_2 = salida[3] - y
+    act_derivada = np.vectorize(derivate_act)
+
+    delta_capa_2 = np.multiply(error_capa_2,act_derivada(salida[3],5)) # error por f'(z) producto hadamar
+    gradiente_salida = delta_capa_2 @ salida[1].T #delta(o)*H.t
+
+    error_capa_1 = W2.T @ delta_capa_2 # V.T * delta(o
+    delta_capa_1 = np.multiply(error_capa_1, act_derivada(salida[1],n_param)) #error*H'(z) producto hadamar también
+    gradiente_oculta = delta_capa_1 @ X.T #delta(h)*X.T
+
+
+    return gradiente_oculta, gradiente_salida
     
-    '''
-    m = len(X)
-    dz = A - Y
-    dw = (1/m) * np.dot(X, dz.T)
-    db = (1/m) * np.sum(dz)
-    return dw, db
-    '''
-    return()    
+  
 # Update Ws
 def ann_updW(alpha, W1, W2, dW1, dW2):
+
     W1 = W1 - alpha * dW1    
     W2 = W2 - alpha * dW2  
  
@@ -191,9 +185,11 @@ def main():
         #print("salida",salida[3])
         dW1, dW2 = ann_gradW(m, salida, param[0],y,W1,W2,x) 
         W1, W2 = ann_updW(param[5],W1,W2,dW1, dW2)
-        if i % 10 == 0:
+        if (i % 10 == 0):
             print("Iteration: ", i)
             predictions = get_predictions(salida[3])
+            print(salida[3].shape)
+            print(salida[3][0:3])
             print("ACC" ,get_accuracy(predictions, y))
     #print(W1,W2)
     

@@ -62,9 +62,18 @@ def save_w(w1,w2):
 
 
 # Training: ANN-BP
-def ann_bp(w1,w2,x,y):
-    #PREGUNTAR BIEN LA ESTRUCTURA DEL BACKWARD
-    #np.savetxt('costo_bp.csv', Cost, fmt='%1.13f', header=' ',  delimiter=' ; ')
+def ann_bp(w1,w2,x,y,param):
+    Cost = []
+    N = x.shape[1] #cantidad de muestras
+    for i in range(param[4]):
+        salida = bp.forward(x, W1, W2, param[0])
+        Cost.append(((np.linalg.norm(salida[3]-y))**2) /N)
+        dW1, dW2 = bp.ann_gradW(salida, param[0],y,W1,W2,x) 
+        W1, W2 = bp.ann_updW(param[5],W1,W2,dW1, dW2)
+        if (i % 10 == 0):
+            print("Iteration: ", i)
+        
+    np.savetxt('costo_bp.csv', Cost, fmt='%1.13f', header=' ',  delimiter=' ; ')
     return(w1,w2)
 
 # Training : ANN-PSO
@@ -95,11 +104,7 @@ def ann_pso(x,y,param):
             print('Iter={} Cost= {:.5f}'.format(iTer,Cost[-1])) 
 
     w= P['gBest']
-    #print(w.shape)
-    #print(w[x.shape[0]:])
-    #print(param[1],"*",x.shape[0]) 
-
-    #print(param[1]*x.shape[0])
+   
     W1 = np.reshape(w[0:param[1]*x.shape[0]],(param[1],x.shape[0])) #se separan los pesos
     W2 = np.reshape(w[param[1]*x.shape[0]:],(2,param[1]))
     #np.savetxt('costo_pso.csv', Cost, fmt='%1.13f', header=' ',  delimiter=' ; ')
@@ -109,7 +114,7 @@ def ann_pso(x,y,param):
 # Training:ANN-PSO and  ANN-BP
 def train_ann(x,y,param):
     w1,w2 = ann_pso(x,y,param)
-    #w1,w2 = ann_bp(w1,w2,x,y,...)    
+    w1,w2 = ann_bp(w1,w2,x,y,param)    
     return(w1,w2) 
    
 # Beginning ...

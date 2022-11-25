@@ -1,6 +1,7 @@
 
 import numpy   as np
 import util_bp as bp
+import trn
 
 
 #Carga data de testing
@@ -11,15 +12,20 @@ import util_bp as bp
 
 # Test: Load data 
 def load_data():
-    ...    
+    x = np.loadtxt('xtst.csv', dtype= float, delimiter=",")
+    y = np.loadtxt('ytst.csv', dtype= int, delimiter=",")
+    y = np.transpose(y)
+
+    with np.load('pesos_ann.npz') as archivo :
+        w1 = archivo['x']
+        w2 = archivo['y']
+
     return(x,y,w1,w2)
-#Normalized data
 
 #Measure
-def metricas(y,z):
+def metricas(y_predict,z_test):
     z = np.array(z)
     metrics=[0,0,0]
-    matrix = confusion_matrix(y,z)
 
     confusion = [[0,0],[0,0]]
     for i in range(0,y_predict.shape[0]):
@@ -28,13 +34,15 @@ def metricas(y,z):
                 confusion[0][0] = confusion[0][0] + 1
             else:
                 confusion[0][1] = confusion[0][1] + 1
-        elif int(y_predict[i,0]) == -1:
+        elif int(y_predict[i,0]) == 0:
             if np.any(z_test[0,i] < 0):
                 confusion[1][0] = confusion[1][0] + 1
             else:
                 confusion[1][1] = confusion[1][1] + 1
 
     np.savetxt('cmatrix_ann.csv', confusion, fmt='%i', header=' ',  delimiter=' ; ')
+
+    matrix = confusion
 
     p1 = matrix[0][0]/(matrix[0][0] + matrix[0][1])
     r1 = matrix[0][0]/(matrix[0][0] + matrix[1][0])
@@ -49,9 +57,12 @@ def metricas(y,z):
 
 
 def main():			
-	xv,yv,w1,w2 = load_data()	
-	zv          = bp.forward()      		
-	metricas(yv,zv) 	
+    param = trn.load_config()
+    xv, yv,w1,w2 = load_data()	
+    zv          = bp.forward(xv,w1,w2,param[0])      		
+    metricas(yv,zv)
+
+    return() 	
 
 # Beginning ...
 if __name__ == '__main__':   

@@ -56,7 +56,7 @@ def Fitness_mse(x,y,X,act,Nh):
         
         #print("YPRED",y_pred.shape)
 
-        mseAux = np.mean((y_pred - y)) ** 2
+        mseAux = ((np.linalg.norm(y_pred-y))**2) /N
         MSE.append(mseAux)
     
     return(MSE)
@@ -114,9 +114,9 @@ def bound(a):
 
     for i in range(a.shape[0]):
         for j in range(a.shape[1]):
-            if a[i][j] > 499:
+            if a[i][j] > 1:
                 a[i][j] =0
-            elif a[i][j] <-499:
+            elif a[i][j] <-1:
                 a[i][j] =0
             
     return a
