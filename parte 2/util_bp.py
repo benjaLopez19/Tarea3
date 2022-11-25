@@ -2,36 +2,6 @@
 
 import pandas as pd
 import numpy  as np   
- 
-
-def load_config():
-    '''
-    pso
-
-0 : Número Activación Oculta : 2
-1 : Número Nodos Ocultos : 20
-2 : Número de Partículas : 25
-3 : Número Iteraciones : 500
-
-bp
-
-Línea 1 : Número Iteraciones : 2000
-Línea 2 : Tasa de Aprendizaje : 0.1
-    '''
-
-    paramAnn = np.genfromtxt("parte 2\cnf_ann_bp.csv",delimiter=',',dtype=None)
-    paramPso = np.genfromtxt("parte 2\cnf_ann_pso.csv",delimiter=',',dtype=None)   
-    par=[]    
-    par.append(np.int16(paramPso[0])) # Número Activación Oculta
-    par.append(np.int16(paramPso[1])) # Número Nodos Ocultos : 20
-    par.append(np.int16(paramPso[2])) # Número de Partículas
-    par.append(np.int16(paramPso[3])) # Número Iteraciones
-
-    par.append(np.int16(paramAnn[0])) # Número Iteraciones     
-    par.append(np.float32(paramAnn[1])) # Tasa de Aprendizaje 
-
-    return(par)
-
 
 # Randomized Weight 
 def randW(Nh,m):
@@ -155,51 +125,3 @@ def ann_updW(alpha, W1, W2, dW1, dW2):
     return W1, W2
 #-----------------------------------------------------------------------
 
-'''
-def get_predictions(A2):
-    return np.argmax(A2, 0)
-
-def get_accuracy(predictions, Y):
-    #print(predictions, Y)
-    return np.sum(predictions == Y) / Y.size
-
-def main():
-    param = load_config()
-    x = np.loadtxt('xtrn.csv', dtype= float, delimiter=",")
-    #x = np.transpose(x)
-    y = np.loadtxt('ytrn.csv', dtype= int, delimiter=",")
-    y = np.transpose(y)
-    m = x.shape[0]
-    print(x.shape,y.shape)
-    print(param)
- 
-    W1, W2 = randW(param[1], m)
-    print(W1.shape,W2.shape)
-    
-    salida = forward(x, W1, W2, param[0])
-    salida = np.array(salida)
-    print(salida[3].shape)
-    print(salida[3])
-
-    for i in range(param[4]):
-        salida = forward(x, W1, W2, param[0])
-        #print("salida",salida[3])
-        dW1, dW2 = ann_gradW(m, salida, param[0],y,W1,W2,x) 
-        W1, W2 = ann_updW(param[5],W1,W2,dW1, dW2)
-        if (i % 10 == 0):
-            print("Iteration: ", i)
-            predictions = get_predictions(salida[3])
-            print(salida[3].shape)
-            print(salida[3][0:3])
-            print("ACC" ,get_accuracy(predictions, y))
-    #print(W1,W2)
-    
-    salida = forward(x, W1, W2, param[0])
-    
-    print(salida[3])
-    #print(y)
-    return ()
-
-if __name__ == '__main__':   
-	main()
-'''
