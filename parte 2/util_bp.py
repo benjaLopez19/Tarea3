@@ -61,7 +61,7 @@ def forward(x, W1, W2, n_param):
     y_pred = act_function(Z2,5)
     #print(y_pred)
     y_pred = np.array(y_pred)
-    print(y_pred.shape)
+    #print(y_pred.shape)
     return([Z1,H,Z2,y_pred])
 
 #Activation function
@@ -121,7 +121,7 @@ def derivate_act(z,n_param):
             return  1/(1+np.exp(-z)) * (1-1/(1+np.exp(-z))) #sigmoid(z)*(1-sigmoid(z))
     return()
 # STEP 2: Feed-Backward: 
-def ann_gradW(m,salida,n_param,y,W1,W2,X):#    
+def ann_gradW(salida,n_param,y,W1,W2,X):#    
     '''
     m numero de variables
     salida parametros entregados por forward: [Z1,H,Z2,y_pred]
@@ -155,6 +155,7 @@ def ann_updW(alpha, W1, W2, dW1, dW2):
     return W1, W2
 #-----------------------------------------------------------------------
 
+'''
 def get_predictions(A2):
     return np.argmax(A2, 0)
 
@@ -201,3 +202,4 @@ def main():
 
 if __name__ == '__main__':   
 	main()
+'''

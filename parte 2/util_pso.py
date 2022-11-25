@@ -86,7 +86,7 @@ def upd_veloc(P,V,X,iTerA, iTerT):
     c1 = 1
     c2 = 2
     a = a_max - (((a_max -a_min)/iTerT) * iTerA)
-    print('a', a)
+    #print('a', a)
     #print("ramdon 1",r1,"ramdom2",r2)
     aux = np.copy(V)
     
@@ -102,7 +102,7 @@ def upd_veloc(P,V,X,iTerA, iTerT):
     V = aux
     V = bound_vel(V)
     #print(V[0])
-    print(X[0][0])
+    #print(X[0][0])
     X = X +V
     X = bound(X)
     #print('vel maxima',np.amax(V))
